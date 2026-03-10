@@ -1,539 +1,940 @@
 <!DOCTYPE html>
-<html class="dark" lang="es">
+<html lang="es">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Escenarios Electorales — San Justo</title>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
-:root {
-  --bg: #0a0a1a; --card: #12122a; --border: #1e1e3a;
-  --lla: #7c3aed; --pj: #3b82f6; --dc: #f97316; --pl: #a78bfa;
-  --k: #10b981; --ucr: #ef4444; --pro: #f59e0b; --fit: #6b7280;
-  --win: #166534; --wint: #86efac; --lose: #7f1d1d; --loset: #fca5a5;
-  --tight: #713f12; --tightt: #fde68a;
-}
-* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-body { font-family:'Space Grotesk',system-ui,sans-serif; background:var(--bg); color:#d4d4d8; overflow-x:hidden; padding-bottom:70px; }
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{--bg:#0c1117;--card:#151c25;--border:#1e2a38;--cyan:#00d4ff;--green:#00e676;--orange:#ffab00;--text:#d0dae6;--muted:#6b7b8d}
+  body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
 
-/* NAV */
-.topbar { position:sticky; top:0; z-index:50; background:rgba(10,10,26,0.92); backdrop-filter:blur(12px); border-bottom:1px solid var(--border); padding:12px 16px; display:flex; align-items:center; gap:10px; }
-.topbar h1 { font-size:1rem; font-weight:700; color:#fff; }
-.topbar .badge { background:var(--lla); color:#fff; font-size:10px; font-weight:700; padding:2px 8px; border-radius:12px; }
+  .top-bar{background:rgba(0,212,255,0.04);border-bottom:1px solid var(--border);padding:8px 24px;text-align:center}
+  .top-bar h1{font-size:0.85rem;font-weight:700;color:var(--cyan);letter-spacing:1.5px}
+  .top-bar p{font-size:0.6rem;color:var(--muted);margin-top:2px}
 
-/* BOTTOM NAV */
-.bottomnav { position:fixed; bottom:0; left:0; right:0; z-index:50; background:rgba(10,10,26,0.95); backdrop-filter:blur(12px); border-top:1px solid var(--border); display:flex; height:60px; }
-.bottomnav button { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px; background:none; border:none; color:#71717a; font-family:inherit; font-size:10px; font-weight:600; cursor:pointer; transition:color 0.2s; }
-.bottomnav button.active { color:var(--lla); }
-.bottomnav button svg { width:22px; height:22px; }
+  .main{max-width:100vw;padding:14px 20px;overflow-y:auto;overflow-x:hidden;height:calc(100vh - 46px)}
 
-/* SECTIONS */
-.section { display:none; padding:16px; max-width:800px; margin:0 auto; animation:fadeIn 0.3s ease; }
-.section.active { display:block; }
-@keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:none} }
+  /* Controls bar */
+  .controls{display:flex;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap;padding-bottom:10px;border-bottom:1px solid var(--border)}
+  .controls label{font-size:0.7rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:0.5px}
+  .ctrl-sep{width:1px;height:20px;background:var(--border);margin:0 4px}
+  .t-btn{padding:6px 12px;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;border-radius:6px;font-size:0.75rem;font-family:inherit;transition:all .15s}
+  .t-btn:hover{border-color:var(--cyan);color:var(--cyan)}
+  .t-btn.active{background:rgba(0,212,255,0.08);border-color:var(--cyan);color:var(--cyan);font-weight:600}
+  .t-select{background:var(--card);color:var(--orange);border:1px solid rgba(255,171,0,0.3);padding:6px 10px;border-radius:6px;
+    font-size:0.75rem;font-family:inherit;cursor:pointer;max-width:220px}
+  .t-select:focus{outline:none;border-color:var(--orange)}
+  .esc-select{background:var(--card);color:var(--cyan);border:1px solid rgba(0,212,255,0.3);padding:6px 10px;border-radius:6px;
+    font-size:0.75rem;font-family:inherit;cursor:pointer;max-width:280px}
+  .esc-select:focus{outline:none;border-color:var(--cyan)}
+  .t-info{font-size:0.65rem;color:var(--muted)}
+  .btn-custom{padding:6px 12px;border:1px solid rgba(255,171,0,0.3);background:transparent;color:var(--orange);cursor:pointer;
+    border-radius:6px;font-size:0.75rem;font-family:inherit;font-weight:600;transition:all .15s}
+  .btn-custom:hover{background:rgba(255,171,0,0.06);border-color:var(--orange)}
+  .btn-custom.active{background:rgba(255,171,0,0.1);border-color:var(--orange)}
 
-/* CARDS */
-.card { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:14px; margin-bottom:10px; transition:border-color 0.2s; }
-.card:hover { border-color:rgba(124,58,237,0.3); }
+  /* Cards */
+  .cards{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:16px;align-items:start}
+  .cards.single{grid-template-columns:1fr}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px;position:relative;overflow:hidden}
+  .card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+  .card.gen::before{background:linear-gradient(90deg,#1976d2,#42a5f5)}
+  .card.leg::before{background:linear-gradient(90deg,var(--cyan),var(--green))}
+  .card-title{font-size:0.72rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:16px}
 
-/* STAT GRID */
-.stats { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-bottom:12px; }
-.stat { background:var(--card); border-radius:12px; padding:12px; text-align:center; border:1px solid var(--border); }
-.stat .v { font-size:1.6rem; font-weight:800; }
-.stat .l { font-size:10px; color:#71717a; margin-top:2px; text-transform:uppercase; letter-spacing:0.5px; }
+  /* Alliance bars */
+  .al{margin-bottom:10px}
+  .al-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:3px}
+  .al-name{font-size:0.8rem;font-weight:500}
+  .al-pct{font-size:1.1rem;font-weight:800}
+  .al-pct.win{color:var(--green)}
+  .al-pct.lose{color:#ff5252}
+  .al-bar{height:28px;background:rgba(255,255,255,0.03);border-radius:5px;overflow:hidden;display:flex;position:relative}
+  .al-seg{height:100%;display:flex;align-items:center;justify-content:center;font-size:0.6rem;font-weight:600;
+    color:rgba(255,255,255,0.95);overflow:hidden;white-space:nowrap;transition:width .4s}
+  .al-seg span{padding:0 4px}
+  .al-mid{position:absolute;left:50%;top:0;bottom:0;width:1px;background:rgba(255,255,255,0.12)}
+  .al-50{position:absolute;left:50%;top:-11px;transform:translateX(-50%);font-size:0.5rem;color:var(--muted)}
+  .al-det{display:flex;gap:6px;flex-wrap:wrap;margin-top:2px}
+  .al-det span{font-size:0.6rem;color:var(--muted)}
+  .al-det strong{color:#b0c0d0}
+  .al-minor{display:flex;gap:12px;flex-wrap:wrap;margin-top:2px;padding:4px 0}
+  .al-minor span{font-size:0.62rem;color:var(--muted)}
 
-/* STACKED BAR */
-.sbar { display:flex; height:44px; border-radius:10px; overflow:hidden; margin:8px 0; position:relative; background:#1a1a2e; }
-.sbar-seg { display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:700; color:#fff; transition:width 0.4s cubic-bezier(0.4,0,0.2,1); min-width:0; overflow:hidden; white-space:nowrap; cursor:pointer; position:relative; }
-.sbar-seg:hover { filter:brightness(1.2); }
-.sbar-divider { width:3px; background:#fff; opacity:0.5; flex-shrink:0; }
-.sbar-seg .tip { display:none; position:absolute; bottom:110%; left:50%; transform:translateX(-50%); background:#000; color:#fff; font-size:11px; padding:4px 8px; border-radius:6px; white-space:nowrap; z-index:10; pointer-events:none; }
-.sbar-seg:hover .tip, .sbar-seg:active .tip { display:block; }
+  /* Verdict */
+  .verdict{background:rgba(0,230,118,0.06);border:1px solid rgba(0,230,118,0.15);border-radius:8px;padding:12px 16px;margin-top:12px}
+  .verdict .t{font-size:0.8rem;color:#a0d8b0}
+  .verdict strong{color:var(--green)}
 
-/* TOGGLES */
-.toggle-grid { display:grid; grid-template-columns:1fr 1fr; gap:6px; margin:10px 0; }
-.toggle-item { display:flex; align-items:center; gap:8px; padding:10px 12px; border-radius:10px; background:var(--card); border:2px solid var(--border); cursor:pointer; transition:all 0.2s; user-select:none; }
-.toggle-item.ours { border-color:var(--lla); background:rgba(124,58,237,0.08); }
-.toggle-item.theirs { border-color:var(--pj); background:rgba(59,130,246,0.08); }
-.toggle-item.locked { opacity:0.7; cursor:default; }
-.toggle-dot { width:12px; height:12px; border-radius:50%; flex-shrink:0; }
-.toggle-name { font-size:13px; font-weight:600; color:#fff; flex:1; }
-.toggle-pct { font-size:12px; font-weight:700; color:#a1a1aa; }
-.toggle-sw { width:36px; height:20px; border-radius:10px; background:#334155; position:relative; transition:background 0.2s; flex-shrink:0; }
-.toggle-sw.on-ours { background:var(--lla); }
-.toggle-sw.on-theirs { background:var(--pj); }
-.toggle-sw::after { content:''; position:absolute; width:16px; height:16px; background:#fff; border-radius:50%; top:2px; left:2px; transition:transform 0.2s; }
-.toggle-sw.on-ours::after, .toggle-sw.on-theirs::after { transform:translateX(16px); }
+  /* Compare table */
+  .cmp{margin-top:16px}
+  .cmp h3{font-size:0.78rem;color:var(--cyan);margin-bottom:10px;font-weight:600}
+  .cmp-wrap{max-height:50vh;overflow:auto;border:1px solid var(--border);border-radius:8px}
+  table.ct{width:100%;border-collapse:collapse;font-size:0.7rem;table-layout:auto}
+  table.ct th{text-align:left;padding:7px 8px;border-bottom:2px solid var(--border);color:var(--cyan);font-weight:600;position:sticky;top:0;background:var(--card)}
+  table.ct td{padding:5px 8px;border-bottom:1px solid rgba(255,255,255,0.04)}
+  table.ct tr{cursor:pointer;transition:background .1s}
+  table.ct tr:hover td{background:rgba(0,212,255,0.04)}
+  .mb{height:18px;border-radius:3px;display:flex;overflow:hidden;min-width:140px}
+  .mb .ms{height:100%}
+  .wt{display:inline-block;padding:2px 8px;border-radius:3px;font-size:0.63rem;font-weight:600}
+  .wt.lla{background:rgba(123,79,255,0.15);color:#b090ff}
+  .wt.pj{background:rgba(25,118,210,0.15);color:#64b5f6}
 
-/* PRESETS */
-.presets { display:flex; gap:6px; overflow-x:auto; padding:4px 0 10px; -webkit-overflow-scrolling:touch; }
-.presets::-webkit-scrollbar { display:none; }
-.preset { flex-shrink:0; padding:8px 14px; border-radius:20px; background:var(--card); border:1px solid var(--border); font-size:12px; font-weight:600; color:#a1a1aa; cursor:pointer; transition:all 0.2s; white-space:nowrap; }
-.preset.active { background:var(--lla); color:#fff; border-color:var(--lla); }
+  /* Party colors */
+  .bg-lla{background:#7b4fff}.bg-jxc{background:#ffc107}.bg-ucr{background:#e53935}.bg-pro{background:#ffc107}
+  .bg-plib{background:#9c27b0}.bg-hpnp{background:#1976d2}.bg-pu{background:#1976d2}.bg-up{background:#00acc1}
+  .bg-fp{background:#00897b}.bg-defcba{background:#ef6c00}.bg-fit{background:#d32f2f}.bg-otros{background:#546e7a}
 
-/* RESULT BADGE */
-.rbadge { display:inline-block; padding:3px 10px; border-radius:8px; font-size:12px; font-weight:700; }
-.rbadge.w { background:var(--win); color:var(--wint); }
-.rbadge.l { background:var(--lose); color:var(--loset); }
-.rbadge.t { background:var(--tight); color:var(--tightt); }
+  /* Builder */
+  .builder{background:var(--card);border:1px solid var(--orange);border-radius:10px;padding:16px;margin-bottom:16px;position:relative;overflow:hidden}
+  .builder::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--orange),#ff6d00)}
+  .builder-title{font-size:0.85rem;font-weight:700;color:var(--orange);margin-bottom:4px}
+  .builder-sub{font-size:0.68rem;color:var(--muted);margin-bottom:16px}
+  .party-pool{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px;min-height:36px;padding:10px;background:rgba(255,255,255,0.02);border:1px dashed var(--border);border-radius:8px}
+  .party-chip{padding:5px 12px;border-radius:20px;font-size:0.72rem;font-weight:600;cursor:pointer;transition:all .15s;border:2px solid transparent;user-select:none}
+  .party-chip:hover{transform:scale(1.05);filter:brightness(1.2)}
+  .party-chip.assigned{opacity:0.3;pointer-events:none}
+  .party-chip .chip-pct{font-weight:400;opacity:0.7;margin-left:3px;font-size:0.65rem}
+  .alliances-area{display:flex;flex-direction:column;gap:10px}
+  .alliance-group{background:rgba(255,255,255,0.02);border:1px solid var(--border);border-radius:8px;padding:12px;position:relative}
+  .alliance-group.active{border-color:var(--orange);box-shadow:0 0 12px rgba(255,171,0,0.1)}
+  .ag-header{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+  .ag-name{background:transparent;border:none;border-bottom:1px solid var(--border);color:var(--text);font-size:0.82rem;font-weight:600;
+    font-family:inherit;padding:2px 4px;width:180px}
+  .ag-name:focus{outline:none;border-color:var(--orange)}
+  .ag-del{background:none;border:none;color:#ff5252;cursor:pointer;font-size:0.85rem;padding:2px 6px;border-radius:4px;opacity:0.5}
+  .ag-del:hover{opacity:1;background:rgba(255,82,82,0.1)}
+  .ag-parties{display:flex;flex-wrap:wrap;gap:5px;min-height:30px}
+  .ag-parties .party-chip{cursor:pointer}
+  .ag-parties .party-chip:hover{opacity:0.7}
+  .ag-placeholder{font-size:0.65rem;color:var(--muted);font-style:italic;padding:6px}
+  .builder-actions{display:flex;gap:8px;margin-top:14px;align-items:center}
+  .btn-add{padding:7px 16px;background:rgba(255,171,0,0.1);border:1px solid rgba(255,171,0,0.3);color:var(--orange);
+    border-radius:6px;cursor:pointer;font-size:0.75rem;font-family:inherit;font-weight:600;transition:all .15s}
+  .btn-add:hover{background:rgba(255,171,0,0.2);border-color:var(--orange)}
+  .btn-calc{padding:7px 20px;background:linear-gradient(135deg,var(--cyan),var(--green));border:none;color:#0c1117;
+    border-radius:6px;cursor:pointer;font-size:0.78rem;font-family:inherit;font-weight:700;transition:all .15s;margin-left:auto}
+  .btn-calc:hover{filter:brightness(1.1);transform:scale(1.02)}
+  .btn-calc:disabled{opacity:0.4;cursor:not-allowed;transform:none}
+  .builder-hint{font-size:0.65rem;color:var(--muted);margin-top:10px;line-height:1.5}
 
-/* BREAKDOWN */
-.breakdown { font-size:11px; color:#a1a1aa; margin-top:4px; }
-.breakdown b { color:#fff; }
-
-/* EVOLUTION */
-.evo { display:flex; align-items:center; margin:4px 0; gap:6px; }
-.evo-y { min-width:52px; text-align:right; font-size:11px; color:#71717a; }
-.evo-bar { flex:1; height:28px; background:#1a1a2e; border-radius:6px; overflow:hidden; }
-.evo-fill { height:100%; border-radius:6px; display:flex; align-items:center; padding-left:8px; font-size:11px; font-weight:700; color:#fff; transition:width 0.5s ease; }
-
-/* COMPARISON */
-.cmp-row { display:flex; align-items:center; gap:6px; padding:6px 0; border-bottom:1px solid var(--border); }
-.cmp-name { width:50px; font-size:12px; font-weight:700; text-align:right; }
-.cmp-bars { flex:1; display:flex; flex-direction:column; gap:2px; }
-.cmp-b { height:18px; border-radius:4px; display:flex; align-items:center; padding:0 6px; font-size:10px; font-weight:700; color:#fff; }
-.cmp-tag { font-size:9px; color:#71717a; margin-left:4px; }
-.cmp-diff { width:40px; text-align:right; font-size:12px; font-weight:700; }
-
-.insight { background:var(--card); border-left:4px solid var(--lla); padding:10px 14px; margin:10px 0; border-radius:0 10px 10px 0; font-size:13px; }
-.insight b { color:#fff; }
-
-h2 { font-size:1.25rem; font-weight:800; color:#fff; margin-bottom:8px; }
-h3 { font-size:1rem; font-weight:700; margin:12px 0 6px; }
-.sub { font-size:11px; color:#71717a; margin-bottom:12px; }
-
-/* LEVEL TABS */
-.level-tabs { display:flex; gap:4px; margin-bottom:12px; }
-.level-tab { flex:1; text-align:center; padding:8px; border-radius:8px; background:var(--card); border:1px solid var(--border); font-size:12px; font-weight:600; color:#71717a; cursor:pointer; transition:all 0.2s; }
-.level-tab.active { background:var(--lla); color:#fff; border-color:var(--lla); }
+  @media(max-width:900px){
+    .cards{grid-template-columns:1fr}
+    .main{padding:12px}
+    .controls{gap:6px}
+  }
+  @media(max-width:600px){
+    .top-bar{padding:6px 12px}
+    .top-bar h1{font-size:0.72rem;letter-spacing:1px}
+    .top-bar p{font-size:0.52rem}
+    .main{padding:8px 10px;height:calc(100vh - 40px)}
+    .controls{flex-direction:column;align-items:stretch;gap:6px;padding-bottom:8px;margin-bottom:10px}
+    .controls label{font-size:0.62rem}
+    .ctrl-sep{display:none}
+    .t-select,.esc-select{max-width:100%;width:100%;font-size:0.72rem;padding:8px 10px}
+    .t-btn{padding:5px 10px;font-size:0.7rem}
+    .btn-custom{width:100%;text-align:center;padding:8px 12px}
+    .cards{gap:12px}
+    .card{padding:12px 10px}
+    .card-title{font-size:0.65rem;margin-bottom:10px}
+    .al-name{font-size:0.72rem}
+    .al-pct{font-size:0.95rem}
+    .al-bar{height:22px}
+    .al-seg{font-size:0.5rem}
+    .al-det span,.al-minor span{font-size:0.55rem}
+    .verdict{padding:10px 12px}
+    .verdict .t{font-size:0.72rem}
+    .cmp-wrap{max-height:60vh;overflow-x:auto;-webkit-overflow-scrolling:touch}
+    table.ct{font-size:0.62rem;min-width:700px}
+    table.ct th,table.ct td{padding:4px 5px;white-space:nowrap}
+    .mb{min-width:90px;height:14px}
+    .builder{padding:12px 10px}
+    .builder-title{font-size:0.78rem}
+    .party-pool{padding:8px;gap:4px}
+    .party-chip{padding:4px 8px;font-size:0.65rem}
+    .party-chip .chip-pct{font-size:0.58rem}
+    .alliance-group{padding:10px 8px}
+    .ag-name{font-size:0.75rem;width:140px}
+    .builder-actions{flex-wrap:wrap}
+    .btn-calc{width:100%;text-align:center}
+  }
 </style>
 </head>
 <body>
 
-<div class="topbar">
-<div class="badge">LLA</div>
-<h1>Escenarios Electorales — San Justo</h1>
+<div class="top-bar">
+  <h1>ESCENARIOS DE ALIANZAS — SAN JUSTO</h1>
+  <p>44 localidades · 574 mesas · Datos reales Leg. 2025 + Gen. 2023 · SIRIUS Intelligence</p>
 </div>
 
-<!-- ===== SECTIONS ===== -->
-
-<!-- DASHBOARD -->
-<div class="section active" id="sec-dash">
-<h2>Resultados Leg. 2025</h2>
-<p class="sub">DINE · 99.65% mesas · Departamento San Justo</p>
-<div class="stats" id="stats-grid"></div>
-<div class="card">
-<div class="sbar" id="main-bar"></div>
-<p style="font-size:11px;color:#71717a;text-align:center">Distribución del voto — tocá cada segmento</p>
-</div>
-<div class="insight">💡 <b>LLA es 1ra fuerza</b> por +7.7pp. Pero sola no llega al 50%. <b>Cassinerio (PL) es la llave.</b></div>
-</div>
-
-<!-- ESCENARIOS -->
-<div class="section" id="sec-esc">
-<h2>Constructor de Coaliciones</h2>
-
-<div class="level-tabs">
-<div class="level-tab active" onclick="setLevel('dpto')">🏛️ Departamento</div>
-<div class="level-tab" onclick="setLevel('sf')">🏙️ San Francisco</div>
-</div>
-
-<p class="sub" id="esc-subtitle">Tocá los partidos para moverlos entre bloques</p>
-
-<div class="card">
-<div style="display:flex;justify-content:space-between;margin-bottom:6px">
-<span style="font-size:11px;font-weight:700;color:var(--lla)">🟣 NUESTRO BLOQUE</span>
-<span style="font-size:11px;font-weight:700;color:var(--pj)">BLOQUE OPOSITOR 🔴</span>
-</div>
-<div class="toggle-grid" id="toggles"></div>
-</div>
-
-<div class="card" id="result-card">
-<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-<div>
-<span style="font-size:11px;color:#71717a">RESULTADO</span>
-<div style="display:flex;align-items:baseline;gap:6px">
-<span id="res-pct-a" style="font-size:1.6rem;font-weight:800;color:var(--lla)">—</span>
-<span style="font-size:13px;color:#71717a">vs</span>
-<span id="res-pct-b" style="font-size:1.6rem;font-weight:800;color:var(--pj)">—</span>
-</div>
-</div>
-<span id="res-badge" class="rbadge w">—</span>
-</div>
-<div class="sbar" id="coalition-bar"></div>
-<div class="breakdown" id="res-breakdown"></div>
-</div>
-
-<h3>Presets</h3>
-<div class="presets" id="presets"></div>
-
-<div id="preset-cards"></div>
-</div>
-
-<!-- COMPARACIÓN -->
-<div class="section" id="sec-cmp">
-<h2>SF vs Departamento</h2>
-<p class="sub">Comparación por partido — Legislativas 2025</p>
-<div class="card" id="cmp-container"></div>
-<div class="insight">💡 <b>SF es más competitivo:</b> LLA rinde 1.6pp menos. PL y K pesan más. Es la plaza que define todo.</div>
-</div>
-
-<!-- EVOLUCIÓN -->
-<div class="section" id="sec-evo">
-<h2>Evolución del Voto</h2>
-<p class="sub">San Justo 2019 → 2025</p>
-<div id="evo-container"></div>
-</div>
-
-<!-- BOTTOM NAV -->
-<div class="bottomnav">
-<button class="active" onclick="nav('dash',this)">
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
-Resultados
-</button>
-<button onclick="nav('esc',this)">
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
-Escenarios
-</button>
-<button onclick="nav('cmp',this)">
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
-Comparar
-</button>
-<button onclick="nav('evo',this)">
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-Evolución
-</button>
+<div class="main" id="main">
+  <div class="controls" id="controls"></div>
+  <div id="builder-container"></div>
+  <div id="cards"></div>
+  <div id="lla-analysis"></div>
+  <div id="compare"></div>
 </div>
 
 <script>
-// ===== DATA =====
-const DATA = {
-  dpto: {
-    label: 'Departamento San Justo',
-    sub: 'DINE · 99.65% mesas',
-    parties: [
-      { id:'lla', name:'LLA', pct:41.50, color:'#7c3aed', locked:'ours' },
-      { id:'pl',  name:'Pto. Libertario', pct:5.28, color:'#a78bfa', locked:null },
-      { id:'ucr', name:'UCR', pct:3.20, color:'#ef4444', locked:null },
-      { id:'pro', name:'PRO', pct:0.75, color:'#f59e0b', locked:null },
-      { id:'pj',  name:'Prov. Unidas (PJ)', pct:33.77, color:'#3b82f6', locked:'theirs' },
-      { id:'dc',  name:'Def. Córdoba', pct:7.55, color:'#f97316', locked:null },
-      { id:'k',   name:'Fza. Patria (K)', pct:3.73, color:'#10b981', locked:null },
-      { id:'fit', name:'FIT-U', pct:0.89, color:'#6b7280', locked:null },
-    ]
-  },
-  sf: {
-    label: 'San Francisco',
-    sub: '38,233 votos válidos',
-    parties: [
-      { id:'lla', name:'LLA', pct:39.86, color:'#7c3aed', locked:'ours' },
-      { id:'pl',  name:'Pto. Libertario', pct:6.05, color:'#a78bfa', locked:null },
-      { id:'ucr', name:'UCR', pct:2.78, color:'#ef4444', locked:null },
-      { id:'pro', name:'PRO', pct:0.92, color:'#f59e0b', locked:null },
-      { id:'pj',  name:'Prov. Unidas (PJ)', pct:31.85, color:'#3b82f6', locked:'theirs' },
-      { id:'dc',  name:'Def. Córdoba', pct:7.57, color:'#f97316', locked:null },
-      { id:'k',   name:'Fza. Patria (K)', pct:4.51, color:'#10b981', locked:null },
-      { id:'fit', name:'FIT-U', pct:1.45, color:'#6b7280', locked:null },
-    ]
-  }
+const PC={"LA LIBERTAD AVANZA":"bg-lla","JUNTOS POR EL CAMBIO":"bg-jxc","UCR":"bg-ucr","PRO":"bg-pro",
+  "PARTIDO LIBERTARIO":"bg-plib","HACEMOS POR NUESTRO PAIS":"bg-hpnp","PROVINCIAS UNIDAS":"bg-pu",
+  "UNION POR LA PATRIA":"bg-up","FUERZA PATRIA":"bg-fp","DEFENDAMOS CORDOBA":"bg-defcba","FIT":"bg-fit"};
+const PS={"LA LIBERTAD AVANZA":"LLA","JUNTOS POR EL CAMBIO":"JxC","HACEMOS POR NUESTRO PAIS":"HPNP",
+  "UNION POR LA PATRIA":"UP","PROVINCIAS UNIDAS":"PU","DEFENDAMOS CORDOBA":"DefCba",
+  "PARTIDO LIBERTARIO":"PLi","FUERZA PATRIA":"FP","UCR":"UCR","PRO":"PRO","FIT":"FIT"};
+
+// Main parties for Leg2025 (the ones users care about)
+const MAIN_PARTIES_LEG=['LA LIBERTAD AVANZA','PROVINCIAS UNIDAS','DEFENDAMOS CORDOBA',
+  'PARTIDO LIBERTARIO','FUERZA PATRIA','UCR','PRO','FIT'];
+
+// Gen2023 parties
+const GEN2023_PARTIES=['LA LIBERTAD AVANZA','HACEMOS POR NUESTRO PAIS','JUNTOS POR EL CAMBIO','UNION POR LA PATRIA','FIT'];
+
+// Mapping: Leg2025 party → Gen2023 equivalent
+const LEG_TO_GEN={
+  'LA LIBERTAD AVANZA':'LA LIBERTAD AVANZA',
+  'PARTIDO LIBERTARIO':'LA LIBERTAD AVANZA',
+  'PROVINCIAS UNIDAS':'HACEMOS POR NUESTRO PAIS',
+  'DEFENDAMOS CORDOBA':'HACEMOS POR NUESTRO PAIS',
+  'UCR':'JUNTOS POR EL CAMBIO',
+  'PRO':'JUNTOS POR EL CAMBIO',
+  'FUERZA PATRIA':'UNION POR LA PATRIA',
+  'FIT':'FIT'
 };
 
-const PRESETS = [
-  { name:'Grieta total', ours:['lla','pl','ucr','pro'], theirs:['pj','dc','k'] },
-  { name:'PL con PJ ⚠️', ours:['lla','ucr','pro'], theirs:['pj','pl','dc','k'] },
-  { name:'Libertarios solos', ours:['lla','pl'], theirs:['pj','dc','k','ucr','pro'] },
-  { name:'LLA+PL+UCR', ours:['lla','pl','ucr'], theirs:['pj','dc','k'] },
-  { name:'LLA sola', ours:['lla'], theirs:['pj','dc','k','pl','ucr','pro','fit'] },
-  { name:'Aliado mínimo', ours:['lla','pl'], theirs:['pj','dc','k'] },
-  { name:'Puricelli sep.', ours:['lla','pl','ucr','pro'], theirs:['pj','dc'], neutral:['k'] },
-];
+// Party chip colors (hex for inline styles)
+const CHIP_COLORS={
+  'LA LIBERTAD AVANZA':'#7b4fff','PROVINCIAS UNIDAS':'#1976d2','DEFENDAMOS CORDOBA':'#ef6c00',
+  'PARTIDO LIBERTARIO':'#9c27b0','FUERZA PATRIA':'#00897b','UCR':'#e53935','PRO':'#ffc107','FIT':'#d32f2f',
+  'HACEMOS POR NUESTRO PAIS':'#1976d2','JUNTOS POR EL CAMBIO':'#ffc107','UNION POR LA PATRIA':'#00acc1'
+};
 
-const EVO = [
-  { name:'LLA', color:'#7c3aed', data:[
-    {y:'2019',v:0},{y:'2021',v:2.2},{y:'PASO 23',v:35.7},{y:'Gen 23',v:35.3},{y:'Balotaje',v:75.7},{y:'Leg 25',v:41.5}
-  ]},
-  { name:'JxC → UCR+PRO', color:'#f59e0b', data:[
-    {y:'2019',v:50.4},{y:'2021',v:53.9},{y:'Gen 23',v:21.0},{y:'Leg 25',v:3.95}
-  ]},
-  { name:'PJ/Hacemos', color:'#3b82f6', data:[
-    {y:'2019',v:17.9},{y:'2021',v:29.8},{y:'Gen 23',v:31.0},{y:'Leg 25',v:33.8}
-  ]},
-  { name:'Kirchnerismo', color:'#10b981', data:[
-    {y:'2019',v:23.6},{y:'2021',v:9.4},{y:'Gen 23',v:11.7},{y:'Leg 25',v:3.7}
-  ]},
-];
+let DATA, curEsc=0, curT='depto', locNames=[];
+let customMode=false, viewingSaved=-1;
+// Each alliance: {name, parties: [partyName, ...]}
+let customAlliances=[];
+let activeGroup=0;
+let rawLeg={}, rawGen={};
+// Saved custom scenarios: [{nombre, alliances: [{name, parties}]}]
+let savedScenarios=JSON.parse(localStorage.getItem('savedEsc')||'[]');
 
-// ===== STATE =====
-let currentLevel = 'dpto';
-let sides = {}; // partyId -> 'ours' | 'theirs' | null
-let activePreset = 0;
+async function init(){
+  try{DATA=await(await fetch('escenarios_alianzas.json')).json();}
+  catch(e){document.getElementById('main').innerHTML='<p style="color:red;padding:40px">Error cargando datos</p>';return;}
 
-function getParties() { return DATA[currentLevel].parties; }
+  locNames=Object.keys(DATA.resultados_leg2025_localidades).sort((a,b)=>
+    (DATA.resultados_leg2025_localidades[b]?.electores||0)-(DATA.resultados_leg2025_localidades[a]?.electores||0));
 
-// ===== NAVIGATION =====
-function nav(sec, btn) {
-  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-  document.getElementById('sec-'+sec).classList.add('active');
-  document.querySelectorAll('.bottomnav button').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
+  // Extract raw data for custom builder
+  extractRawData();
+
+  buildControls();
+  render();
 }
 
-function setLevel(lvl) {
-  currentLevel = lvl;
-  document.querySelectorAll('.level-tab').forEach((t,i) => t.classList.toggle('active', (i===0&&lvl==='dpto')||(i===1&&lvl==='sf')));
-  document.getElementById('esc-subtitle').textContent = DATA[lvl].label + ' · ' + DATA[lvl].sub;
-  applyPreset(activePreset);
+function extractRawData(){
+  // Leg2025 raw: per party, per level
+  rawLeg.depto=DATA.resultados_leg2025_depto;
+  rawLeg.sf=DATA.resultados_leg2025_sf||{};
+  rawLeg.localidades={};
+  for(const[loc,d]of Object.entries(DATA.resultados_leg2025_localidades)){
+    rawLeg.localidades[loc]=d.partidos||{};
+  }
+  // Also get SF from localidades if not top-level
+  if(!DATA.resultados_leg2025_sf){
+    rawLeg.sf=rawLeg.localidades['San Francisco']||{};
+  }
+
+  // Gen2023 raw: extract from escenario 0 (todos divididos = each alliance is 1 party)
+  const esc0=DATA.escenarios[0];
+  rawGen.depto={};rawGen.sf={};rawGen.localidades={};
+  for(const[alName,alData]of Object.entries(esc0.gen2023)){
+    // Each alliance in esc0 has exactly 1 party in breakdown
+    const partido=alData.departamental?.breakdown?.[0]?.partido;
+    if(!partido) continue;
+    rawGen.depto[partido]={votos:alData.departamental.votos, pct:alData.departamental.pct};
+    if(alData.san_francisco) rawGen.sf[partido]={votos:alData.san_francisco.votos, pct:alData.san_francisco.pct};
+    if(alData.por_localidad){
+      for(const[loc,ld]of Object.entries(alData.por_localidad)){
+        if(!rawGen.localidades[loc]) rawGen.localidades[loc]={};
+        rawGen.localidades[loc][partido]={votos:ld.votos, pct:ld.pct};
+      }
+    }
+  }
 }
 
-// ===== TOGGLES =====
-function initToggles() {
-  const grid = document.getElementById('toggles');
-  grid.innerHTML = '';
-  getParties().forEach(p => {
-    const side = sides[p.id] || null;
-    const isLocked = p.locked;
-    const div = document.createElement('div');
-    div.className = 'toggle-item' + (side==='ours'?' ours':'') + (side==='theirs'?' theirs':'') + (isLocked?' locked':'');
-    div.innerHTML = `
-      <div class="toggle-dot" style="background:${p.color}"></div>
-      <div class="toggle-name">${p.name}</div>
-      <div class="toggle-pct">${p.pct}%</div>
-      <div class="toggle-sw ${side==='ours'?'on-ours':side==='theirs'?'on-theirs':''}"></div>
-    `;
-    if (!isLocked) {
-      div.addEventListener('click', () => {
-        // Cycle: null -> ours -> theirs -> null
-        if (!sides[p.id]) sides[p.id] = 'ours';
-        else if (sides[p.id]==='ours') sides[p.id] = 'theirs';
-        else sides[p.id] = null;
-        activePreset = -1;
-        document.querySelectorAll('.preset').forEach(p => p.classList.remove('active'));
-        render();
+function buildControls(){
+  const c=document.getElementById('controls');
+  c.innerHTML='';
+
+  // === Escenario selector ===
+  const lbl1=document.createElement('label');lbl1.textContent='Escenario:';c.appendChild(lbl1);
+
+  const escSel=document.createElement('select');
+  escSel.className='esc-select';
+  DATA.escenarios.forEach((e,i)=>{
+    const o=document.createElement('option');
+    o.value='preset:'+i;
+    o.textContent=(i+1)+'. '+e.nombre.replace(/^\d+\.\s*/,'');
+    if(!customMode&&curEsc===i) o.selected=true;
+    escSel.appendChild(o);
+  });
+  // Saved scenarios
+  if(savedScenarios.length>0){
+    const og=document.createElement('optgroup');og.label='Guardados';
+    savedScenarios.forEach((s,i)=>{
+      const o=document.createElement('option');
+      o.value='saved:'+i;
+      o.textContent=s.nombre;
+      if(customMode&&viewingSaved===i) o.selected=true;
+      og.appendChild(o);
+    });
+    escSel.appendChild(og);
+  }
+  escSel.onchange=()=>{
+    const v=escSel.value;
+    if(v.startsWith('preset:')){
+      customMode=false;curEsc=parseInt(v.split(':')[1]);viewingSaved=-1;
+    }else if(v.startsWith('saved:')){
+      loadSaved(parseInt(v.split(':')[1]));return;
+    }
+    buildControls();render();
+  };
+  c.appendChild(escSel);
+
+  // Custom button
+  const cb=document.createElement('button');
+  cb.className='btn-custom'+(customMode&&viewingSaved===-1?' active':'');
+  cb.textContent='+ Armar';
+  cb.onclick=()=>{customMode=true;viewingSaved=-1;customAlliances=[];activeGroup=0;buildControls();renderBuilder();render();};
+  c.appendChild(cb);
+
+  // Separator
+  const sep=document.createElement('div');sep.className='ctrl-sep';c.appendChild(sep);
+
+  // === Territorio selector ===
+  const lbl2=document.createElement('label');lbl2.textContent='Territorio:';c.appendChild(lbl2);
+
+  [{id:'depto',label:'Departamento'},{id:'sf',label:'San Francisco'}].forEach(x=>{
+    const b=document.createElement('button');
+    b.className='t-btn'+(curT===x.id?' active':'');
+    b.textContent=x.label;
+    b.onclick=()=>{curT=x.id;buildControls();render();};
+    c.appendChild(b);
+  });
+
+  const locSel=document.createElement('select');
+  locSel.className='t-select';
+  const o0=document.createElement('option');
+  o0.value='';o0.textContent='Localidad...';
+  locSel.appendChild(o0);
+  locNames.forEach(loc=>{
+    const o=document.createElement('option');
+    o.value='loc:'+loc;
+    const ld=DATA.resultados_leg2025_localidades[loc];
+    o.textContent=`${loc} (${ld?ld.electores.toLocaleString():0})`;
+    if(curT==='loc:'+loc) o.selected=true;
+    locSel.appendChild(o);
+  });
+  locSel.onchange=()=>{if(locSel.value){curT=locSel.value;}else{curT='depto';}buildControls();render();};
+  c.appendChild(locSel);
+
+  if(curT.startsWith('loc:')){
+    const loc=curT.replace('loc:','');
+    const ld=DATA.resultados_leg2025_localidades[loc];
+    if(ld){const s=document.createElement('span');s.className='t-info';s.textContent=`${ld.electores.toLocaleString()} elect. · ${ld.mesas} mesas`;c.appendChild(s);}
+    c.querySelectorAll('.t-btn').forEach(b=>b.classList.remove('active'));
+  }
+}
+
+function loadSaved(i){
+  const s=savedScenarios[i];
+  customMode=true;
+  viewingSaved=i;
+  customAlliances=JSON.parse(JSON.stringify(s.alliances));
+  activeGroup=0;
+  buildControls();
+  renderBuilder();
+  render();
+}
+
+function deleteSaved(i){
+  savedScenarios.splice(i,1);
+  localStorage.setItem('savedEsc',JSON.stringify(savedScenarios));
+  viewingSaved=-1;
+  buildControls();
+}
+
+// ===== CUSTOM BUILDER =====
+
+function getAssignedParties(){
+  const set=new Set();
+  customAlliances.forEach(a=>a.parties.forEach(p=>set.add(p)));
+  return set;
+}
+
+function renderBuilder(){
+  const bc=document.getElementById('builder-container');
+  if(!customMode){bc.innerHTML='';return;}
+
+  const assigned=getAssignedParties();
+  // Use current territory's data for percentages
+  let pctData=rawLeg.depto;
+  if(curT==='sf') pctData=rawLeg.sf;
+  else if(curT.startsWith('loc:')) pctData=rawLeg.localidades[curT.replace('loc:','')]||{};
+
+  let poolHTML='';
+  MAIN_PARTIES_LEG.forEach(p=>{
+    const pct=pctData[p]?.pct||0;
+    const bg=CHIP_COLORS[p]||'#546e7a';
+    const cls=assigned.has(p)?'party-chip assigned':'party-chip';
+    poolHTML+=`<div class="${cls}" style="background:${bg}" onclick="assignParty('${p}')">${PS[p]||p} <span class="chip-pct">${pct}%</span></div>`;
+  });
+
+  let groupsHTML='';
+  customAlliances.forEach((al,i)=>{
+    const isActive=i===activeGroup;
+    let partiesHTML='';
+    if(al.parties.length===0){
+      partiesHTML='<div class="ag-placeholder">Click un partido arriba para agregarlo</div>';
+    }else{
+      al.parties.forEach(p=>{
+        const bg=CHIP_COLORS[p]||'#546e7a';
+        partiesHTML+=`<div class="party-chip" style="background:${bg}" onclick="removeParty(${i},'${p}')">${PS[p]||p}</div>`;
       });
     }
-    grid.appendChild(div);
-  });
-}
-
-// ===== RENDER =====
-function makeStackedBar(container, segsLeft, segsRight, height) {
-  container.innerHTML = '';
-  container.style.height = (height||44)+'px';
-  const total = [...segsLeft, ...segsRight].reduce((s,x) => s+x.pct, 0);
-  
-  segsLeft.forEach(s => {
-    const w = (s.pct/total*100);
-    const div = document.createElement('div');
-    div.className = 'sbar-seg';
-    div.style.cssText = `width:${w}%;background:${s.color}`;
-    div.innerHTML = w > 5 ? `${s.name} ${s.pct.toFixed(1)}` : (w > 2 ? s.pct.toFixed(1) : '');
-    div.innerHTML += `<span class="tip">${s.name}: ${s.pct.toFixed(1)}%</span>`;
-    container.appendChild(div);
-  });
-  
-  if (segsLeft.length && segsRight.length) {
-    const d = document.createElement('div');
-    d.className = 'sbar-divider';
-    container.appendChild(d);
-  }
-  
-  segsRight.forEach(s => {
-    const w = (s.pct/total*100);
-    const div = document.createElement('div');
-    div.className = 'sbar-seg';
-    div.style.cssText = `width:${w}%;background:${s.color}`;
-    div.innerHTML = w > 5 ? `${s.name} ${s.pct.toFixed(1)}` : (w > 2 ? s.pct.toFixed(1) : '');
-    div.innerHTML += `<span class="tip">${s.name}: ${s.pct.toFixed(1)}%</span>`;
-    container.appendChild(div);
-  });
-}
-
-function render() {
-  const parties = getParties();
-  
-  // Calculate
-  let ours = [], theirs = [], neutral = [];
-  parties.forEach(p => {
-    const s = p.locked || sides[p.id] || null;
-    if (s==='ours') ours.push(p);
-    else if (s==='theirs') theirs.push(p);
-    else neutral.push(p);
-  });
-  
-  const totalA = ours.reduce((s,p) => s+p.pct, 0);
-  const totalB = theirs.reduce((s,p) => s+p.pct, 0);
-  const diff = totalA - totalB;
-  
-  // Toggles
-  initToggles();
-  
-  // Coalition bar
-  makeStackedBar(document.getElementById('coalition-bar'), ours, theirs);
-  
-  // Result
-  document.getElementById('res-pct-a').textContent = totalA.toFixed(1)+'%';
-  document.getElementById('res-pct-b').textContent = totalB.toFixed(1)+'%';
-  
-  const badge = document.getElementById('res-badge');
-  if (diff > 5) { badge.className='rbadge w'; badge.textContent='✅ +'+diff.toFixed(1)+'pp'; }
-  else if (diff > 0) { badge.className='rbadge t'; badge.textContent='⚡ +'+diff.toFixed(1)+'pp'; }
-  else if (diff > -3) { badge.className='rbadge t'; badge.textContent='⚡ '+diff.toFixed(1)+'pp'; }
-  else { badge.className='rbadge l'; badge.textContent='❌ '+diff.toFixed(1)+'pp'; }
-  
-  // Breakdown
-  const bkA = ours.map(p => `<b>${p.name}</b> ${p.pct}`).join(' + ');
-  const bkB = theirs.map(p => `<b>${p.name}</b> ${p.pct}`).join(' + ');
-  const neutText = neutral.length ? `<br>Neutros: ${neutral.map(p=>p.name+' '+p.pct).join(', ')}` : '';
-  document.getElementById('res-breakdown').innerHTML = `🟣 ${bkA} = <b>${totalA.toFixed(1)}%</b><br>🔴 ${bkB} = <b>${totalB.toFixed(1)}%</b>${neutText}`;
-}
-
-// ===== PRESETS =====
-function applyPreset(idx) {
-  activePreset = idx;
-  const p = PRESETS[idx];
-  sides = {};
-  if (p.ours) p.ours.forEach(id => sides[id] = 'ours');
-  if (p.theirs) p.theirs.forEach(id => sides[id] = 'theirs');
-  
-  document.querySelectorAll('.preset').forEach((el,i) => el.classList.toggle('active', i===idx));
-  render();
-  renderPresetCards();
-}
-
-function initPresets() {
-  const container = document.getElementById('presets');
-  container.innerHTML = '';
-  PRESETS.forEach((p,i) => {
-    const btn = document.createElement('div');
-    btn.className = 'preset' + (i===0?' active':'');
-    btn.textContent = p.name;
-    btn.addEventListener('click', () => applyPreset(i));
-    container.appendChild(btn);
-  });
-}
-
-function renderPresetCards() {
-  const container = document.getElementById('preset-cards');
-  container.innerHTML = '';
-  const parties = getParties();
-  
-  PRESETS.forEach((preset, idx) => {
-    const ours = parties.filter(p => preset.ours?.includes(p.id));
-    const theirs = parties.filter(p => preset.theirs?.includes(p.id));
-    const neutral = preset.neutral ? parties.filter(p => preset.neutral.includes(p.id)) : [];
-    
-    const totalA = ours.reduce((s,p) => s+p.pct, 0);
-    const totalB = theirs.reduce((s,p) => s+p.pct, 0);
-    const diff = totalA - totalB;
-    
-    let badgeClass, badgeText;
-    if (diff > 5) { badgeClass='rbadge w'; badgeText='✅ +'+diff.toFixed(1)+'pp'; }
-    else if (diff > 0) { badgeClass='rbadge t'; badgeText='⚡ +'+diff.toFixed(1)+'pp'; }
-    else if (diff > -3) { badgeClass='rbadge t'; badgeText='⚡ '+diff.toFixed(1)+'pp'; }
-    else { badgeClass='rbadge l'; badgeText='❌ '+diff.toFixed(1)+'pp'; }
-    
-    const card = document.createElement('div');
-    card.className = 'card';
-    card.style.cursor = 'pointer';
-    card.style.borderColor = idx===activePreset ? 'var(--lla)' : '';
-    card.addEventListener('click', () => applyPreset(idx));
-    
-    const bkA = ours.map(p => `<span style="color:${p.color}">${p.name} <b>${p.pct}</b></span>`).join(' + ');
-    const bkB = theirs.map(p => `<span style="color:${p.color}">${p.name} <b>${p.pct}</b></span>`).join(' + ');
-    const neutHtml = neutral.length ? `<div style="font-size:11px;color:#eab308;margin-top:4px">🟡 ${neutral.map(p=>p.name+' '+p.pct+'%').join(', ')} — separado</div>` : '';
-    
-    card.innerHTML = `
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-        <div><span style="font-size:10px;color:#71717a;text-transform:uppercase;letter-spacing:1px">Escenario ${idx+1}</span><br><span style="font-size:14px;font-weight:700;color:#fff">${preset.name}</span></div>
-        <span class="${badgeClass}">${badgeText}</span>
+    groupsHTML+=`<div class="alliance-group${isActive?' active':''}" onclick="activeGroup=${i};renderBuilder();">
+      <div class="ag-header">
+        <input class="ag-name" value="${al.name}" onchange="customAlliances[${i}].name=this.value" onclick="event.stopPropagation();activeGroup=${i};renderBuilder();" placeholder="Nombre alianza...">
+        <button class="ag-del" onclick="event.stopPropagation();removeGroup(${i})" title="Eliminar">&times;</button>
       </div>
-      <div class="sbar" id="preset-bar-${idx}"></div>
-      <div style="font-size:11px;color:#a1a1aa;margin-top:4px">🟣 ${bkA} = <b style="color:#fff">${totalA.toFixed(1)}%</b></div>
-      <div style="font-size:11px;color:#a1a1aa">🔴 ${bkB} = <b style="color:#fff">${totalB.toFixed(1)}%</b></div>
-      ${neutHtml}
-    `;
-    container.appendChild(card);
-    
-    // Render the bar after appending
-    setTimeout(() => makeStackedBar(document.getElementById('preset-bar-'+idx), ours, theirs, 36), 10);
+      <div class="ag-parties">${partiesHTML}</div>
+    </div>`;
   });
+
+  const canCalc=customAlliances.length>0&&customAlliances.some(a=>a.parties.length>0);
+
+  bc.innerHTML=`<div class="builder">
+    <div class="builder-title">Constructor de Escenarios</div>
+    <div class="builder-sub">Armá tus propias alianzas. Click en un partido para agregarlo al grupo seleccionado.</div>
+    <div class="party-pool">${poolHTML}</div>
+    <div class="alliances-area">${groupsHTML}</div>
+    <div class="builder-actions">
+      <button class="btn-add" onclick="addGroup()">+ Nueva alianza</button>
+      <button class="btn-add" onclick="clearBuilder()" style="color:#ff5252;border-color:rgba(255,82,82,0.3)">Limpiar</button>
+      <button class="btn-add" onclick="saveScenario()" ${canCalc?'':'disabled'} style="color:var(--green);border-color:rgba(0,230,118,0.3)">Guardar</button>
+      <button class="btn-calc" onclick="computeAndRender()" ${canCalc?'':'disabled'}>Ver resultados</button>
+    </div>
+    <div class="builder-hint">Los partidos no agrupados aparecen como independientes. Gen. 2023 se auto-calcula mapeando partidos a sus equivalentes de esa elección.</div>
+  </div>`;
 }
 
-// ===== DASHBOARD =====
-function initDashboard() {
-  const parties = DATA.dpto.parties;
-  const grid = document.getElementById('stats-grid');
-  grid.innerHTML = '';
-  parties.forEach(p => {
-    if (p.pct < 1) return;
-    grid.innerHTML += `<div class="stat"><div class="v" style="color:${p.color}">${p.pct}%</div><div class="l">${p.name}</div></div>`;
-  });
-  
-  // Main bar
-  const sorted = [...parties].sort((a,b) => b.pct - a.pct);
-  makeStackedBar(document.getElementById('main-bar'), sorted, [], 50);
+function addGroup(){
+  const n=customAlliances.length+1;
+  customAlliances.push({name:'Alianza '+n, parties:[]});
+  activeGroup=customAlliances.length-1;
+  renderBuilder();
 }
 
-// ===== COMPARISON =====
-function initComparison() {
-  const container = document.getElementById('cmp-container');
-  container.innerHTML = '';
-  const dp = DATA.dpto.parties;
-  const sp = DATA.sf.parties;
-  
-  dp.forEach(d => {
-    const s = sp.find(p => p.id === d.id);
-    if (!s || d.pct < 1) return;
-    const diff = s.pct - d.pct;
-    const diffColor = diff > 0 ? '#22c55e' : diff < 0 ? '#ef4444' : '#71717a';
-    
-    container.innerHTML += `
-      <div class="cmp-row">
-        <div class="cmp-name" style="color:${d.color}">${d.id.toUpperCase()}</div>
-        <div class="cmp-bars">
-          <div class="cmp-b" style="width:${s.pct*2}%;background:${d.color}88">${s.pct}%<span class="cmp-tag">SF</span></div>
-          <div class="cmp-b" style="width:${d.pct*2}%;background:${d.color}">${d.pct}%<span class="cmp-tag">Dpto</span></div>
-        </div>
-        <div class="cmp-diff" style="color:${diffColor}">${diff>0?'+':''}${diff.toFixed(1)}</div>
-      </div>`;
-  });
+function removeGroup(i){
+  customAlliances.splice(i,1);
+  if(activeGroup>=customAlliances.length) activeGroup=Math.max(0,customAlliances.length-1);
+  renderBuilder();
+  render();
 }
 
-// ===== EVOLUTION =====
-function initEvolution() {
-  const container = document.getElementById('evo-container');
-  container.innerHTML = '';
-  
-  EVO.forEach(party => {
-    let html = `<div class="card"><h3 style="color:${party.color}">${party.name}</h3>`;
-    party.data.forEach((d, i) => {
-      const isLast = i === party.data.length - 1;
-      const opacity = 0.3 + (i / party.data.length) * 0.7;
-      html += `<div class="evo"><div class="evo-y"${isLast?' style="font-weight:700;color:#fff"':''}>${d.y}</div><div class="evo-bar"><div class="evo-fill" style="width:${Math.max(d.v,1)}%;background:${party.color};opacity:${opacity}">${d.v > 0 ? d.v+'%' : '—'}</div></div></div>`;
+function assignParty(party){
+  if(customAlliances.length===0){addGroup();}
+  const assigned=getAssignedParties();
+  if(assigned.has(party)) return;
+  customAlliances[activeGroup].parties.push(party);
+  renderBuilder();
+  render();
+}
+
+function removeParty(groupIdx, party){
+  event.stopPropagation();
+  customAlliances[groupIdx].parties=customAlliances[groupIdx].parties.filter(p=>p!==party);
+  renderBuilder();
+  render();
+}
+
+function computeCustomScenario(){
+  // Build a virtual escenario from customAlliances
+  const assigned=getAssignedParties();
+  // Unassigned main parties become their own alliance
+  const allGroups=[...customAlliances.map(a=>({name:a.name,parties:[...a.parties]}))];
+  MAIN_PARTIES_LEG.forEach(p=>{
+    if(!assigned.has(p)){
+      allGroups.push({name:PS[p]||p, parties:[p]});
+    }
+  });
+
+  // Compute leg2025
+  const leg2025={};
+  allGroups.forEach(g=>{
+    leg2025[g.name]={departamental:null, san_francisco:null, por_localidad:{}};
+
+    // Departamental
+    leg2025[g.name].departamental=aggregateParties(g.parties, rawLeg.depto, sumVotosDepto('leg'));
+    // SF
+    leg2025[g.name].san_francisco=aggregateParties(g.parties, rawLeg.sf, sumVotosDepto('leg_sf'));
+    // Per locality
+    locNames.forEach(loc=>{
+      const locData=rawLeg.localidades[loc]||{};
+      const total=Object.values(locData).reduce((s,d)=>s+(d?.votos||0),0);
+      leg2025[g.name].por_localidad[loc]=aggregateParties(g.parties, locData, total);
     });
-    
-    // Insight
-    if (party.name.includes('LLA')) html += `<div class="insight" style="margin-top:8px">De <b>0% a 41.5%</b> en 6 años. Absorbió todo JxC.</div>`;
-    if (party.name.includes('JxC')) html += `<div class="insight" style="margin-top:8px;border-color:var(--ucr)">De <b>54% a ~4%</b>. El electorado migró completo a LLA.</div>`;
-    if (party.name.includes('PJ')) html += `<div class="insight" style="margin-top:8px;border-color:var(--pj)">Piso sólido <b>30-34%</b>. Estructura, intendentes, obra pública.</div>`;
-    if (party.name.includes('K')) html += `<div class="insight" style="margin-top:8px;border-color:var(--k)">De <b>24% a 4%</b>. San Justo es anti-K.</div>`;
-    
-    html += '</div>';
-    container.innerHTML += html;
   });
+
+  // Compute gen2023 by auto-mapping
+  const gen2023={};
+  // First, figure out which gen2023 parties go into which alliance
+  const genGroupMap={};// gen2023_party -> alliance_name
+  allGroups.forEach(g=>{
+    const genParties=new Set();
+    g.parties.forEach(p=>{
+      const gp=LEG_TO_GEN[p];
+      if(gp) genParties.add(gp);
+    });
+    genParties.forEach(gp=>{
+      if(!genGroupMap[gp]) genGroupMap[gp]=g.name;
+    });
+  });
+  // Unassigned gen2023 parties
+  GEN2023_PARTIES.forEach(gp=>{
+    if(!genGroupMap[gp]) genGroupMap[gp]=gp;
+  });
+
+  // Group gen2023 data
+  const genGroups={};// allianceName -> [gen2023_parties]
+  for(const[gp,alName]of Object.entries(genGroupMap)){
+    if(!genGroups[alName]) genGroups[alName]=[];
+    genGroups[alName].push(gp);
+  }
+
+  for(const[alName,genParties]of Object.entries(genGroups)){
+    gen2023[alName]={departamental:null, san_francisco:null, por_localidad:{}};
+    const totalDepto=Object.values(rawGen.depto).reduce((s,d)=>s+(d?.votos||0),0);
+    gen2023[alName].departamental=aggregateParties(genParties, rawGen.depto, totalDepto);
+    const totalSF=Object.values(rawGen.sf).reduce((s,d)=>s+(d?.votos||0),0);
+    gen2023[alName].san_francisco=aggregateParties(genParties, rawGen.sf, totalSF);
+    locNames.forEach(loc=>{
+      const locData=rawGen.localidades[loc]||{};
+      const total=Object.values(locData).reduce((s,d)=>s+(d?.votos||0),0);
+      gen2023[alName].por_localidad[loc]=aggregateParties(genParties, locData, total);
+    });
+  }
+
+  return{nombre:'Escenario personalizado', gen2023, leg2025};
 }
 
-// ===== INIT =====
-function init() {
-  initDashboard();
-  initPresets();
-  applyPreset(0);
-  initComparison();
-  initEvolution();
+function aggregateParties(parties, rawData, totalVotos){
+  let votos=0;
+  const breakdown=[];
+  parties.forEach(p=>{
+    const d=rawData[p];
+    if(d){
+      votos+=d.votos||0;
+      breakdown.push({partido:p, votos:d.votos||0, pct:d.pct||0});
+    }
+  });
+  if(totalVotos===0) return{votos:0, pct:0, breakdown};
+  const pct=Math.round(votos/totalVotos*1000)/10;
+  return{votos, pct, breakdown};
+}
+
+let _cachedTotalLeg=null, _cachedTotalLegSF=null;
+function sumVotosDepto(key){
+  if(key==='leg'){
+    if(_cachedTotalLeg===null) _cachedTotalLeg=Object.values(rawLeg.depto).reduce((s,d)=>s+(d?.votos||0),0);
+    return _cachedTotalLeg;
+  }
+  if(key==='leg_sf'){
+    if(_cachedTotalLegSF===null) _cachedTotalLegSF=Object.values(rawLeg.sf).reduce((s,d)=>s+(d?.votos||0),0);
+    return _cachedTotalLegSF;
+  }
+  return 0;
+}
+
+function clearBuilder(){
+  customAlliances=[];activeGroup=0;viewingSaved=-1;renderBuilder();render();
+}
+
+function saveScenario(){
+  const hasParties=customAlliances.some(a=>a.parties.length>0);
+  if(!hasParties) return;
+  const nombre=prompt('Nombre del escenario:',customAlliances.map(a=>a.name).join(' vs '));
+  if(!nombre) return;
+  if(viewingSaved>=0){
+    savedScenarios[viewingSaved]={nombre, alliances:JSON.parse(JSON.stringify(customAlliances))};
+  }else{
+    savedScenarios.push({nombre, alliances:JSON.parse(JSON.stringify(customAlliances))});
+    viewingSaved=savedScenarios.length-1;
+  }
+  localStorage.setItem('savedEsc',JSON.stringify(savedScenarios));
+  buildControls();
+}
+
+function computeAndRender(){
+  render();
+  // Scroll to results
+  document.getElementById('cards').scrollIntoView({behavior:'smooth'});
+}
+
+// ===== RENDER (supports both preset + custom) =====
+
+function getEsc(){
+  if(customMode) return computeCustomScenario();
+  return DATA.escenarios[curEsc];
+}
+
+function getData(esc){
+  let label,leg={},gen={},info='';
+  if(curT==='depto'){
+    label='Departamento San Justo';
+    for(const[n,d]of Object.entries(esc.gen2023)) gen[n]=d.departamental;
+    for(const[n,d]of Object.entries(esc.leg2025)) leg[n]=d.departamental;
+  }else if(curT==='sf'){
+    label='San Francisco';
+    for(const[n,d]of Object.entries(esc.gen2023)) gen[n]=d.san_francisco;
+    for(const[n,d]of Object.entries(esc.leg2025)) leg[n]=d.san_francisco;
+  }else{
+    const loc=curT.replace('loc:','');
+    label=loc;
+    for(const[n,d]of Object.entries(esc.gen2023)) gen[n]=d.por_localidad?.[loc]||null;
+    for(const[n,d]of Object.entries(esc.leg2025)) leg[n]=d.por_localidad?.[loc]||null;
+  }
+  const hasGen=Object.values(gen).some(d=>d&&d.pct>0);
+  return{label,leg,gen:hasGen?gen:null};
+}
+
+function buildBars(data){
+  const entries=Object.entries(data).filter(([,d])=>d&&d.pct>0).sort((a,b)=>(b[1]?.pct||0)-(a[1]?.pct||0));
+  const maxP=Math.max(...entries.map(([,d])=>d?.pct||0));
+  const major=entries.filter(([,d])=>d.pct>=2);
+  const minor=entries.filter(([,d])=>d.pct>0&&d.pct<2);
+  let html='';
+  major.forEach(([name,d])=>{
+    const isWin=d.pct===maxP;
+    let segs='';
+    if(d.breakdown?.length>0) d.breakdown.forEach(b=>{
+      const label=b.pct>=6?`${PS[b.partido]||b.partido.substring(0,4)} ${b.pct}%`:'';
+      segs+=`<div class="al-seg ${PC[b.partido]||'bg-otros'}" style="width:${b.pct}%"><span>${label}</span></div>`;
+    });
+    const det=d.breakdown&&d.breakdown.length>1?d.breakdown.map(b=>`<span><strong>${PS[b.partido]||b.partido.substring(0,6)}</strong> ${b.pct}%</span>`).join(''):'';
+    html+=`<div class="al"><div class="al-top"><span class="al-name">${name}</span><span class="al-pct ${isWin?'win':'lose'}">${d.pct}%</span></div>
+      <div style="position:relative"><div class="al-50">50%</div><div class="al-bar">${segs}<div class="al-mid"></div></div></div>
+      ${det?'<div class="al-det">'+det+'</div>':''}</div>`;
+  });
+  if(minor.length>0){
+    const minorHTML=minor.map(([name,d])=>`<span>${name} <strong>${d.pct}%</strong></span>`).join('');
+    html+=`<div class="al-minor">${minorHTML}</div>`;
+  }
+  return html;
+}
+
+function buildVerdict(data){
+  const e=Object.entries(data).filter(([,d])=>d&&d.pct>0).sort((a,b)=>b[1].pct-a[1].pct);
+  if(e.length<2) return '';
+  const[w,wd]=e[0],[s]=e[1];
+  const diff=(wd.pct-e[1][1].pct).toFixed(1);
+  return `<div class="verdict"><span class="t"><strong>${w}</strong> ${wd.pct>=50?'gana con mayoría absoluta':'lidera'} con <strong>${wd.pct}%</strong> (+${diff}pp).${wd.pct<50?' No alcanza 50%.':''}</span></div>`;
+}
+
+function render(){
+  if(customMode) renderBuilder();
+  else document.getElementById('builder-container').innerHTML='';
+
+  const esc=getEsc();
+  const{label,leg,gen}=getData(esc);
+
+  // Check if there's anything to show
+  const hasLeg=Object.values(leg).some(d=>d&&d.pct>0);
+  if(!hasLeg&&customMode){
+    document.getElementById('cards').innerHTML='<div style="padding:20px;text-align:center;color:var(--muted);font-size:0.85rem">Agregá partidos a las alianzas y hacé click en <strong style="color:var(--orange)">Ver resultados</strong></div>';
+    document.getElementById('lla-analysis').innerHTML='';
+    document.getElementById('compare').innerHTML='';
+    return;
+  }
+
+  let h='';
+  if(gen){
+    h=`<div class="cards"><div class="card gen"><div class="card-title">Generales 2023 — ${label}</div>${buildBars(gen)}</div>
+      <div class="card leg"><div class="card-title">Legislativas 2025 — ${label}</div>${buildBars(leg)}${buildVerdict(leg)}</div></div>`;
+  }else{
+    h=`<div class="cards single"><div class="card leg"><div class="card-title">Legislativas 2025 — ${label}</div>${buildBars(leg)}${buildVerdict(leg)}</div></div>`;
+  }
+  document.getElementById('cards').innerHTML=h;
+  document.getElementById('lla-analysis').innerHTML=buildLLAAnalysis();
+  document.getElementById('compare').innerHTML=buildTable(esc);
+}
+
+// Elecciones a intendente 2023 — candidatos >3%
+// Fuente: El Periódico SF, La Voz de San Justo, Arroyito Ciudad, La Radio 102.9, Infobae, Perfil
+const ELEC_INT_2023={
+  'San Francisco':{fecha:'25/06',cands:[
+    {nombre:'Bernarte',fuerza:'HUxC',pct:42.3,votos:16274},
+    {nombre:'Puricelli',fuerza:'JxC',pct:35.7,votos:13730},
+    {nombre:'Piscitello',fuerza:'PDC',pct:4.0,votos:1543},
+    {nombre:'Romero',fuerza:'K',pct:3.6,votos:1409},
+    {nombre:'Cassinerio',fuerza:'PLi',pct:3.2,votos:1249}
+  ]},
+  'Arroyito':{fecha:'25/06',cands:[
+    {nombre:'Benedetti',fuerza:'HUxC',pct:45.5,votos:7387},
+    {nombre:'Cravero',fuerza:'JxC',pct:32.2,votos:5231},
+    {nombre:'Sileone',fuerza:'Enc.Vec.',pct:13.6,votos:2204}
+  ]},
+  'Morteros':{fecha:'11/06',cands:[
+    {nombre:'Demarchi',fuerza:'Alternativa',pct:36.3,votos:3971},
+    {nombre:'Gandino',fuerza:'JxC',pct:34.6,votos:3793},
+    {nombre:'Peretti',fuerza:'PJ',pct:29.1,votos:3189}
+  ]},
+  'Las Varillas':{fecha:'17/09',cands:[
+    {nombre:'Daniele',fuerza:'Vecinal/UCR',pct:52.3,votos:5455},
+    {nombre:'Baldrich',fuerza:'PJ',pct:23.7,votos:2477},
+    {nombre:'Cravero',fuerza:'JxC/PRO',pct:22.4,votos:2341}
+  ]},
+  'Brinkmann':{fecha:'25/06',cands:[
+    {nombre:'Actis',fuerza:'HUxC',pct:64.3},
+    {nombre:'Racca',fuerza:'JxC',pct:29.8}
+  ]},
+  'Freyre':{fecha:'25/06',cands:[
+    {nombre:'Baldo',fuerza:'HUxC',pct:65.8,votos:2687},
+    {nombre:'Carignano',fuerza:'JxC',pct:34.2,votos:1396}
+  ]},
+  'Balnearia':{fecha:'25/06',cands:[
+    {nombre:'Méndez',fuerza:'HUxC',pct:52.9,votos:2534},
+    {nombre:'Dopazo',fuerza:'JxC',pct:38.3,votos:1836}
+  ]},
+  'Devoto':{fecha:'11/06',cands:[
+    {nombre:'Rinero',fuerza:'JxC',pct:55,votos:2283},
+    {nombre:'Daniele',fuerza:'Somos Devoto',pct:45}
+  ]},
+  'Alicia':{fecha:'25/06',cands:[
+    {nombre:'Bianchini',fuerza:'HUxC',pct:53.0},
+    {nombre:'Linares',fuerza:'JxC',pct:34.2}
+  ]},
+  'Porteña':{fecha:'25/06',cands:[
+    {nombre:'Passero',fuerza:'JxC',pct:48.8},
+    {nombre:'Reusa',fuerza:'HUxC',pct:43.3}
+  ]},
+  'Sacanta':{fecha:'25/06',cands:[
+    {nombre:'Mecchia',fuerza:'JxC',pct:49.5},
+    {nombre:'Giaccone',fuerza:'HUxC',pct:39.2}
+  ]},
+  'Tránsito':{fecha:'25/06',cands:[
+    {nombre:'Violo',fuerza:'HUxC',pct:60.7},
+    {nombre:'Fauda',fuerza:'JxC',pct:30.1}
+  ]},
+  'La Francia':{fecha:'25/06',cands:[
+    {nombre:'Castellina',fuerza:'HUxC',pct:56.3},
+    {nombre:'Ramos',fuerza:'JxC',pct:34.3}
+  ]},
+  'Colonia Marina':{fecha:'25/06',cands:[
+    {nombre:'Cerutti',fuerza:'JxC',pct:51.7},
+    {nombre:'Scarello',fuerza:'HUxC',pct:43.6}
+  ]},
+  'El Tío':{fecha:'25/06',cands:[
+    {nombre:'Bertotti',fuerza:'HUxC',pct:44.7},
+    {nombre:'Lencinas',fuerza:'JxC',pct:43.4}
+  ]},
+  'El Arañado':{fecha:'25/06',cands:[
+    {nombre:'Gudiño',fuerza:'HUxC',pct:60.4},
+    {nombre:'Juárez',fuerza:'Unite',pct:23.2},
+    {nombre:'Marchetti',fuerza:'JxC',pct:16.4}
+  ]},
+  'El Fortín':{fecha:'25/06',cands:[
+    {nombre:'Entesano',fuerza:'HUxC',pct:70.9},
+    {nombre:'Falzetti',fuerza:'JxC',pct:19.6}
+  ]},
+  'La Paquita':{fecha:'25/06',cands:[
+    {nombre:'Muselo',fuerza:'HUxC',pct:62.8},
+    {nombre:'Landi',fuerza:'JxC',pct:33.4}
+  ]},
+  'La Tordilla':{fecha:'25/06',cands:[
+    {nombre:'Bordoni',fuerza:'HUxC',pct:47.9},
+    {nombre:'Bernardi',fuerza:'JxC',pct:41.6}
+  ]},
+  'Marull':{fecha:'25/06',cands:[
+    {nombre:'Faletto',fuerza:'HUxC',pct:60.0},
+    {nombre:'Costantino',fuerza:'UVF',pct:34.5}
+  ]},
+  'Quebracho Herrado':{fecha:'25/06',cands:[
+    {nombre:'Marson',fuerza:'HUxC',pct:51.9},
+    {nombre:'Aguirre',fuerza:'JxC',pct:41.3}
+  ]},
+  'Altos de Chipión':{fecha:'25/06',cands:[
+    {nombre:'Fuyana',fuerza:'HUxC',pct:54.6},
+    {nombre:'García',fuerza:'JxC',pct:42.8}
+  ]},
+  'Villa Concepción del Tío':{fecha:'25/06',cands:[
+    {nombre:'Mercado González',fuerza:'HUxC',pct:50.8},
+    {nombre:'Moriconi',fuerza:'JxC',pct:28.9}
+  ]},
+  'Colonia Vignaud':{fecha:'11/06',cands:[
+    {nombre:'Vigna',fuerza:'HUxC'},
+    {nombre:'Viano',fuerza:'JxC'},
+    {nombre:'Salazar',fuerza:'Creo'}
+  ]},
+  'Saturnino M. Laspiur':{fecha:'11/06',cands:[
+    {nombre:'Depetris',fuerza:'Unidos x Laspiur'},
+    {nombre:'Lozano',fuerza:'Juntos x Laspiur'}
+  ]},
+  // Lista única (sin elección competitiva)
+  'Colonia Iturraspe':{fecha:'25/06',cands:[{nombre:'Salvagno',fuerza:'Lista única'}]},
+  'Colonia Anita':{fecha:'25/06',cands:[{nombre:'Busso',fuerza:'Lista única'}]},
+  'Colonia Prosperidad':{fecha:'25/06',cands:[{nombre:'Maradona',fuerza:'Lista única'}]},
+  'Seeber':{fecha:'25/06',cands:[{nombre:'Giorgis',fuerza:'Lista única'}]},
+  'Colonia San Pedro':{fecha:'25/06',cands:[{nombre:'Novachig',fuerza:'Lista única'}]},
+};
+// Colores por fuerza para mini-badges
+const ELEC_COLORS={'HUxC':'#1976d2','JxC':'#ffc107','PJ':'#1976d2','PLi':'#9c27b0','PDC':'#78909c',
+  'K':'#00bcd4','Creo':'#26a69a','Alternativa':'#ff7043','Enc.Vec.':'#66bb6a','Vecinal/UCR':'#e53935','JxC/PRO':'#ffc107',
+  'Unite':'#8d6e63','UVF':'#ab47bc','Somos Devoto':'#ef5350','Lista única':'#546e7a',
+  'Unidos x Laspiur':'#42a5f5','Juntos x Laspiur':'#ffa726'};
+
+// Gobierno local: intendente/jefe comunal y fuerza política
+// PJ = peronismo/cordobesismo (Llaryora), UCR = radical, UCR>LLA = radical acercado a LLA
+const GOB_LOCAL={
+  'San Francisco':{fuerza:'PJ',intendente:'Bernarte',nota:'Ciudad de Llaryora'},
+  'Arroyito':{fuerza:'UCR>PJ',intendente:'Benedetti',nota:'Radical aliado al cordobesismo'},
+  'Morteros':{fuerza:'PJ',intendente:'Demarchi',nota:'Mejor imagen depto (+20.3%)'},
+  'Las Varillas':{fuerza:'UCR',intendente:'Daniele',nota:'Reelecto con 52%'},
+  'Brinkmann':{fuerza:'PJ',intendente:'Actis',nota:'Mejor imagen depto (+21.2%)'},
+  'Freyre':{fuerza:'PJ',intendente:'Baldo',nota:'Hacemos Unidos'},
+  'Balnearia':{fuerza:'PJ',intendente:'Méndez'},
+  'Devoto':{fuerza:'UCR>LLA',intendente:'Rinero',nota:'Ya negocia con LLA'},
+  'Porteña':{fuerza:'UCR>LLA',intendente:'Passero',nota:'Ya negocia con LLA'},
+  'La Francia':{fuerza:'PJ',intendente:'Castellina',nota:'Hacemos Unidos'},
+  'Colonia San Bartolomé':{fuerza:'PJ',intendente:'Colombero',nota:'Hacemos Unidos'},
+  'Alicia':{fuerza:'PJ',intendente:'Bianchini',nota:'Hacemos Unidos'},
+  'Tránsito':{fuerza:'PJ',intendente:'Violo',nota:'Hacemos Unidos'},
+  'Sacanta':{fuerza:'UCR',intendente:'Mecchia',nota:'JxC'},
+  'Colonia Iturraspe':{fuerza:'UCR>LLA',intendente:'Salvagno',nota:'Ya negocia con LLA'},
+  'Colonia Prosperidad':{fuerza:'UCR>LLA',intendente:'Maradona',nota:'Ya negocia con LLA'},
+  'Colonia Anita':{fuerza:'UCR>LLA',intendente:'Busso',nota:'Ya negocia con LLA'},
+  'Colonia Marina':{fuerza:'UCR>LLA',intendente:'Cerutti',nota:'Ya negocia con LLA'},
+};
+const GOB_COLORS={'PJ':'#1976d2','UCR':'#e53935','UCR>LLA':'#7b4fff','UCR>PJ':'#ef6c00'};
+const GOB_LABELS={'PJ':'PJ','UCR':'UCR','UCR>LLA':'UCR→LLA','UCR>PJ':'UCR→PJ'};
+
+function buildLLAAnalysis(){
+  const LLA='LA LIBERTAD AVANZA';
+  const ALIADOS_VIABLES=['PARTIDO LIBERTARIO','UCR','PRO'];
+  let winsAlone=0, rows='';
+  let gobStats={pj:0,ucr:0,ucr_lla:0,ucr_pj:0,sin:0};
+  locNames.forEach(loc=>{
+    const partidos=rawLeg.localidades[loc]||{};
+    const llaData=partidos[LLA];
+    if(!llaData) return;
+    const llaPct=llaData.pct, llaVotos=llaData.votos;
+    let isFirst=true;
+    for(const[p,d]of Object.entries(partidos)){
+      if(p!==LLA&&d.pct>llaPct){isFirst=false;break;}
+    }
+    if(isFirst) winsAlone++;
+    let bestAlly='',bestV=0,bestPct=0;
+    for(const p of ALIADOS_VIABLES){
+      const d=partidos[p];
+      if(d&&d.votos>bestV){bestV=d.votos;bestAlly=p;bestPct=d.pct;}
+    }
+    const totalAfirm=Object.values(partidos).reduce((s,d)=>s+(d.votos||0),0);
+    const combinedPct=totalAfirm>0?Math.round((llaVotos+bestV)/totalAfirm*1000)/10:0;
+    const ld=DATA.resultados_leg2025_localidades[loc];
+    const allyShort=PS[bestAlly]||bestAlly.substring(0,8);
+    const allyBg=CHIP_COLORS[bestAlly]||'#546e7a';
+
+    // Gobierno local
+    const gob=GOB_LOCAL[loc];
+    let gobHTML='<td style="color:var(--muted);font-size:0.63rem">—</td>';
+    if(gob){
+      const gc=GOB_COLORS[gob.fuerza]||'#546e7a';
+      const gl=GOB_LABELS[gob.fuerza]||gob.fuerza;
+      if(gob.fuerza==='PJ') gobStats.pj++;
+      else if(gob.fuerza==='UCR') gobStats.ucr++;
+      else if(gob.fuerza==='UCR>LLA') gobStats.ucr_lla++;
+      else if(gob.fuerza==='UCR>PJ') gobStats.ucr_pj++;
+      gobHTML=`<td title="${gob.intendente}${gob.nota?' — '+gob.nota:''}"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${gc};margin-right:5px;vertical-align:middle"></span><span style="color:${gc};font-weight:600;font-size:0.68rem">${gl}</span> <span style="color:var(--muted);font-size:0.63rem">${gob.intendente}</span></td>`;
+    } else { gobStats.sin++; }
+
+    // Elección intendente 2023
+    const elec=ELEC_INT_2023[loc];
+    let elecHTML='<td style="color:var(--muted);font-size:0.6rem">—</td>';
+    if(elec&&elec.cands.length>0){
+      const c=elec.cands;
+      if(c.length===1&&c[0].fuerza==='Lista única'){
+        elecHTML=`<td style="font-size:0.6rem"><span style="color:var(--muted)">Lista única</span></td>`;
+      } else {
+        let pills=c.map((x,i)=>{
+          const col=ELEC_COLORS[x.fuerza]||'#546e7a';
+          const bold=i===0?'font-weight:700;':'';
+          const pctStr=x.pct?` ${x.pct}%`:'';
+          return `<span style="${bold}color:${col}">${x.nombre} (${x.fuerza}${pctStr})</span>`;
+        }).join('<span style="color:var(--border)"> · </span>');
+        elecHTML=`<td style="font-size:0.6rem;line-height:1.4">${pills}</td>`;
+      }
+    }
+
+    rows+=`<tr>
+      <td><strong>${loc}</strong></td>
+      <td>${(ld?.electores||0).toLocaleString()}</td>
+      ${gobHTML}
+      ${elecHTML}
+      <td style="font-weight:700;color:${isFirst?'var(--green)':'#ff5252'}">${llaPct}%</td>
+      <td style="color:${isFirst?'var(--green)':'#ff5252'}">${isFirst?'Si':'No'}</td>
+      <td><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${allyBg};margin-right:5px;vertical-align:middle"></span>${allyShort} (${bestPct}%)</td>
+      <td style="font-weight:700;color:${combinedPct>=50?'var(--green)':'var(--text)'}">LLA+${allyShort} = ${combinedPct}%</td>
+    </tr>`;
+  });
+  const gobSummary=`<span style="color:#1976d2">PJ ${gobStats.pj}</span> · <span style="color:#e53935">UCR ${gobStats.ucr}</span> · <span style="color:#7b4fff">UCR→LLA ${gobStats.ucr_lla}</span> · <span style="color:#ef6c00">UCR→PJ ${gobStats.ucr_pj}</span>`;
+  return `<div class="cmp" style="margin-top:16px">
+    <h3 style="color:var(--green)">Analisis LLA por localidad</h3>
+    <p style="font-size:0.72rem;color:var(--muted);margin-bottom:4px">LLA gana sola en <strong style="color:var(--green)">${winsAlone}</strong> de ${locNames.length} localidades (Leg. 2025)</p>
+    <p style="font-size:0.68rem;color:var(--muted);margin-bottom:10px">Gobierno local: ${gobSummary}</p>
+    <div class="cmp-wrap"><table class="ct">
+      <thead><tr><th>Localidad</th><th>Elect.</th><th>Gobierno</th><th>Intendente 2023</th><th>LLA %</th><th>1ra?</th><th>Mejor aliado</th><th>Combinado</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table></div>
+    <p style="font-size:0.58rem;color:var(--muted);margin-top:6px;opacity:0.7">Intendente 2023: datos de medios locales (El Periódico SF, La Voz de San Justo, Arroyito Ciudad). Candidatos >3%. No escrutinio oficial.</p>
+    </div>`;
+}
+
+function buildTable(esc){
+  const alNames=Object.keys(esc.leg2025);
+  const short=alNames.map(n=>n.length>16?n.substring(0,16)+'…':n);
+  let hdr='<th>Localidad</th><th>Elect.</th>';
+  short.forEach(n=>hdr+=`<th>${n}</th>`);
+  hdr+='<th>Visual</th><th>Resultado</th>';
+  let rows='',lW=0,oW=0;
+  locNames.forEach(loc=>{
+    const ld=DATA.resultados_leg2025_localidades[loc];
+    let cells=`<td><strong>${loc}</strong></td><td>${(ld?.electores||0).toLocaleString()}</td>`;
+    let maxP=0,winner='',barS='';
+    alNames.forEach(an=>{
+      const d=esc.leg2025[an]?.por_localidad?.[loc];
+      const p=d?d.pct:0;
+      cells+=`<td style="font-weight:${p>=40?'600':'400'};color:${p>=50?'var(--green)':'inherit'}">${p}%</td>`;
+      if(p>maxP){maxP=p;winner=an;}
+      const pp=d?.breakdown?.map(b=>b.partido)||[];
+      let bg='bg-otros';for(const x of pp){if(PC[x]){bg=PC[x];break;}}
+      barS+=`<div class="ms ${bg}" style="width:${p}%"></div>`;
+    });
+    if(winner.includes('LLA')||winner==='LLA') lW++; else oW++;
+    const isLLA=winner.includes('LLA')||winner==='LLA';
+    cells+=`<td><div class="mb">${barS}</div></td>`;
+    cells+=`<td><span class="wt ${isLLA?'lla':'pj'}">${winner.length>20?winner.substring(0,18)+'…':winner} ${maxP}%</span></td>`;
+    rows+=`<tr onclick="curT='loc:${loc.replace(/'/g,"\\'")}';buildControls();render();window.scrollTo(0,0)">${cells}</tr>`;
+  });
+  return `<div class="cmp"><h3>Todas las localidades — Leg. 2025 (click = ver detalle)</h3>
+    <p style="font-size:0.7rem;color:var(--muted);margin-bottom:8px">LLA/alianza gana en <strong style="color:var(--green)">${lW}</strong> loc. · Oposición en <strong style="color:#ff5252">${oW}</strong></p>
+    <div class="cmp-wrap"><table class="ct"><thead><tr>${hdr}</tr></thead><tbody>${rows}</tbody></table></div></div>`;
 }
 
 init();
 </script>
-
 </body>
 </html>
