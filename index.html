@@ -935,26 +935,6 @@ function buildTable(esc){
 }
 
 init();
-
-// Version check: show banner if new version available (don't auto-reload)
-(function(){
-  const VER = document.documentElement.outerHTML.length;
-  let notified = false;
-  setInterval(async()=>{
-    if(notified) return;
-    try {
-      const r = await fetch(location.href, {cache:'no-store',method:'HEAD'});
-      const len = r.headers.get('content-length');
-      if(len && Math.abs(parseInt(len)-VER) > 100) {
-        notified = true;
-        const bar = document.createElement('div');
-        bar.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:99999;background:#1e40af;color:#fff;padding:10px 20px;text-align:center;font-size:14px;font-family:Inter,sans-serif;display:flex;align-items:center;justify-content:center;gap:12px';
-        bar.innerHTML = 'Hay una nueva version disponible <button onclick="location.reload()" style="background:#fff;color:#1e40af;border:none;padding:5px 16px;border-radius:6px;font-weight:600;cursor:pointer">Actualizar</button> <button onclick="this.parentElement.remove()" style="background:none;border:1px solid rgba(255,255,255,.4);color:#fff;padding:5px 12px;border-radius:6px;cursor:pointer">Ahora no</button>';
-        document.body.prepend(bar);
-      }
-    } catch{}
-  }, 5*60*1000);
-})();
 </script>
 </body>
 </html>
