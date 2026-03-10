@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html class="dark" lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Escenarios Electorales — San Justo</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0a1a; --card: #12122a; --border: #1e1e3a;
+  --lla: #7c3aed; --pj: #3b82f6; --dc: #f97316; --pl: #a78bfa;
+  --k: #10b981; --ucr: #ef4444; --pro: #f59e0b; --fit: #6b7280;
+  --win: #166534; --wint: #86efac; --lose: #7f1d1d; --loset: #fca5a5;
+  --tight: #713f12; --tightt: #fde68a;
+}
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+body { font-family:'Space Grotesk',system-ui,sans-serif; background:var(--bg); color:#d4d4d8; overflow-x:hidden; padding-bottom:70px; }
+
+/* NAV */
+.topbar { position:sticky; top:0; z-index:50; background:rgba(10,10,26,0.92); backdrop-filter:blur(12px); border-bottom:1px solid var(--border); padding:12px 16px; display:flex; align-items:center; gap:10px; }
+.topbar h1 { font-size:1rem; font-weight:700; color:#fff; }
+.topbar .badge { background:var(--lla); color:#fff; font-size:10px; font-weight:700; padding:2px 8px; border-radius:12px; }
+
+/* BOTTOM NAV */
+.bottomnav { position:fixed; bottom:0; left:0; right:0; z-index:50; background:rgba(10,10,26,0.95); backdrop-filter:blur(12px); border-top:1px solid var(--border); display:flex; height:60px; }
+.bottomnav button { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px; background:none; border:none; color:#71717a; font-family:inherit; font-size:10px; font-weight:600; cursor:pointer; transition:color 0.2s; }
+.bottomnav button.active { color:var(--lla); }
+.bottomnav button svg { width:22px; height:22px; }
+
+/* SECTIONS */
+.section { display:none; padding:16px; max-width:800px; margin:0 auto; animation:fadeIn 0.3s ease; }
+.section.active { display:block; }
+@keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:none} }
+
+/* CARDS */
+.card { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:14px; margin-bottom:10px; transition:border-color 0.2s; }
+.card:hover { border-color:rgba(124,58,237,0.3); }
+
+/* STAT GRID */
+.stats { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-bottom:12px; }
+.stat { background:var(--card); border-radius:12px; padding:12px; text-align:center; border:1px solid var(--border); }
+.stat .v { font-size:1.6rem; font-weight:800; }
+.stat .l { font-size:10px; color:#71717a; margin-top:2px; text-transform:uppercase; letter-spacing:0.5px; }
+
+/* STACKED BAR */
+.sbar { display:flex; height:44px; border-radius:10px; overflow:hidden; margin:8px 0; position:relative; background:#1a1a2e; }
+.sbar-seg { display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:700; color:#fff; transition:width 0.4s cubic-bezier(0.4,0,0.2,1); min-width:0; overflow:hidden; white-space:nowrap; cursor:pointer; position:relative; }
+.sbar-seg:hover { filter:brightness(1.2); }
+.sbar-divider { width:3px; background:#fff; opacity:0.5; flex-shrink:0; }
+.sbar-seg .tip { display:none; position:absolute; bottom:110%; left:50%; transform:translateX(-50%); background:#000; color:#fff; font-size:11px; padding:4px 8px; border-radius:6px; white-space:nowrap; z-index:10; pointer-events:none; }
+.sbar-seg:hover .tip, .sbar-seg:active .tip { display:block; }
+
+/* TOGGLES */
+.toggle-grid { display:grid; grid-template-columns:1fr 1fr; gap:6px; margin:10px 0; }
+.toggle-item { display:flex; align-items:center; gap:8px; padding:10px 12px; border-radius:10px; background:var(--card); border:2px solid var(--border); cursor:pointer; transition:all 0.2s; user-select:none; }
+.toggle-item.ours { border-color:var(--lla); background:rgba(124,58,237,0.08); }
+.toggle-item.theirs { border-color:var(--pj); background:rgba(59,130,246,0.08); }
+.toggle-item.locked { opacity:0.7; cursor:default; }
+.toggle-dot { width:12px; height:12px; border-radius:50%; flex-shrink:0; }
+.toggle-name { font-size:13px; font-weight:600; color:#fff; flex:1; }
+.toggle-pct { font-size:12px; font-weight:700; color:#a1a1aa; }
+.toggle-sw { width:36px; height:20px; border-radius:10px; background:#334155; position:relative; transition:background 0.2s; flex-shrink:0; }
+.toggle-sw.on-ours { background:var(--lla); }
+.toggle-sw.on-theirs { background:var(--pj); }
+.toggle-sw::after { content:''; position:absolute; width:16px; height:16px; background:#fff; border-radius:50%; top:2px; left:2px; transition:transform 0.2s; }
+.toggle-sw.on-ours::after, .toggle-sw.on-theirs::after { transform:translateX(16px); }
+
+/* PRESETS */
+.presets { display:flex; gap:6px; overflow-x:auto; padding:4px 0 10px; -webkit-overflow-scrolling:touch; }
+.presets::-webkit-scrollbar { display:none; }
+.preset { flex-shrink:0; padding:8px 14px; border-radius:20px; background:var(--card); border:1px solid var(--border); font-size:12px; font-weight:600; color:#a1a1aa; cursor:pointer; transition:all 0.2s; white-space:nowrap; }
+.preset.active { background:var(--lla); color:#fff; border-color:var(--lla); }
+
+/* RESULT BADGE */
+.rbadge { display:inline-block; padding:3px 10px; border-radius:8px; font-size:12px; font-weight:700; }
+.rbadge.w { background:var(--win); color:var(--wint); }
+.rbadge.l { background:var(--lose); color:var(--loset); }
+.rbadge.t { background:var(--tight); color:var(--tightt); }
+
+/* BREAKDOWN */
+.breakdown { font-size:11px; color:#a1a1aa; margin-top:4px; }
+.breakdown b { color:#fff; }
+
+/* EVOLUTION */
+.evo { display:flex; align-items:center; margin:4px 0; gap:6px; }
+.evo-y { min-width:52px; text-align:right; font-size:11px; color:#71717a; }
+.evo-bar { flex:1; height:28px; background:#1a1a2e; border-radius:6px; overflow:hidden; }
+.evo-fill { height:100%; border-radius:6px; display:flex; align-items:center; padding-left:8px; font-size:11px; font-weight:700; color:#fff; transition:width 0.5s ease; }
+
+/* COMPARISON */
+.cmp-row { display:flex; align-items:center; gap:6px; padding:6px 0; border-bottom:1px solid var(--border); }
+.cmp-name { width:50px; font-size:12px; font-weight:700; text-align:right; }
+.cmp-bars { flex:1; display:flex; flex-direction:column; gap:2px; }
+.cmp-b { height:18px; border-radius:4px; display:flex; align-items:center; padding:0 6px; font-size:10px; font-weight:700; color:#fff; }
+.cmp-tag { font-size:9px; color:#71717a; margin-left:4px; }
+.cmp-diff { width:40px; text-align:right; font-size:12px; font-weight:700; }
+
+.insight { background:var(--card); border-left:4px solid var(--lla); padding:10px 14px; margin:10px 0; border-radius:0 10px 10px 0; font-size:13px; }
+.insight b { color:#fff; }
+
+h2 { font-size:1.25rem; font-weight:800; color:#fff; margin-bottom:8px; }
+h3 { font-size:1rem; font-weight:700; margin:12px 0 6px; }
+.sub { font-size:11px; color:#71717a; margin-bottom:12px; }
+
+/* LEVEL TABS */
+.level-tabs { display:flex; gap:4px; margin-bottom:12px; }
+.level-tab { flex:1; text-align:center; padding:8px; border-radius:8px; background:var(--card); border:1px solid var(--border); font-size:12px; font-weight:600; color:#71717a; cursor:pointer; transition:all 0.2s; }
+.level-tab.active { background:var(--lla); color:#fff; border-color:var(--lla); }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+<div class="badge">LLA</div>
+<h1>Escenarios Electorales — San Justo</h1>
+</div>
+
+<!-- ===== SECTIONS ===== -->
+
+<!-- DASHBOARD -->
+<div class="section active" id="sec-dash">
+<h2>Resultados Leg. 2025</h2>
+<p class="sub">DINE · 99.65% mesas · Departamento San Justo</p>
+<div class="stats" id="stats-grid"></div>
+<div class="card">
+<div class="sbar" id="main-bar"></div>
+<p style="font-size:11px;color:#71717a;text-align:center">Distribución del voto — tocá cada segmento</p>
+</div>
+<div class="insight">💡 <b>LLA es 1ra fuerza</b> por +7.7pp. Pero sola no llega al 50%. <b>Cassinerio (PL) es la llave.</b></div>
+</div>
+
+<!-- ESCENARIOS -->
+<div class="section" id="sec-esc">
+<h2>Constructor de Coaliciones</h2>
+
+<div class="level-tabs">
+<div class="level-tab active" onclick="setLevel('dpto')">🏛️ Departamento</div>
+<div class="level-tab" onclick="setLevel('sf')">🏙️ San Francisco</div>
+</div>
+
+<p class="sub" id="esc-subtitle">Tocá los partidos para moverlos entre bloques</p>
+
+<div class="card">
+<div style="display:flex;justify-content:space-between;margin-bottom:6px">
+<span style="font-size:11px;font-weight:700;color:var(--lla)">🟣 NUESTRO BLOQUE</span>
+<span style="font-size:11px;font-weight:700;color:var(--pj)">BLOQUE OPOSITOR 🔴</span>
+</div>
+<div class="toggle-grid" id="toggles"></div>
+</div>
+
+<div class="card" id="result-card">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+<div>
+<span style="font-size:11px;color:#71717a">RESULTADO</span>
+<div style="display:flex;align-items:baseline;gap:6px">
+<span id="res-pct-a" style="font-size:1.6rem;font-weight:800;color:var(--lla)">—</span>
+<span style="font-size:13px;color:#71717a">vs</span>
+<span id="res-pct-b" style="font-size:1.6rem;font-weight:800;color:var(--pj)">—</span>
+</div>
+</div>
+<span id="res-badge" class="rbadge w">—</span>
+</div>
+<div class="sbar" id="coalition-bar"></div>
+<div class="breakdown" id="res-breakdown"></div>
+</div>
+
+<h3>Presets</h3>
+<div class="presets" id="presets"></div>
+
+<div id="preset-cards"></div>
+</div>
+
+<!-- COMPARACIÓN -->
+<div class="section" id="sec-cmp">
+<h2>SF vs Departamento</h2>
+<p class="sub">Comparación por partido — Legislativas 2025</p>
+<div class="card" id="cmp-container"></div>
+<div class="insight">💡 <b>SF es más competitivo:</b> LLA rinde 1.6pp menos. PL y K pesan más. Es la plaza que define todo.</div>
+</div>
+
+<!-- EVOLUCIÓN -->
+<div class="section" id="sec-evo">
+<h2>Evolución del Voto</h2>
+<p class="sub">San Justo 2019 → 2025</p>
+<div id="evo-container"></div>
+</div>
+
+<!-- BOTTOM NAV -->
+<div class="bottomnav">
+<button class="active" onclick="nav('dash',this)">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+Resultados
+</button>
+<button onclick="nav('esc',this)">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+Escenarios
+</button>
+<button onclick="nav('cmp',this)">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+Comparar
+</button>
+<button onclick="nav('evo',this)">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+Evolución
+</button>
+</div>
+
+<script>
+// ===== DATA =====
+const DATA = {
+  dpto: {
+    label: 'Departamento San Justo',
+    sub: 'DINE · 99.65% mesas',
+    parties: [
+      { id:'lla', name:'LLA', pct:41.50, color:'#7c3aed', locked:'ours' },
+      { id:'pl',  name:'Pto. Libertario', pct:5.28, color:'#a78bfa', locked:null },
+      { id:'ucr', name:'UCR', pct:3.20, color:'#ef4444', locked:null },
+      { id:'pro', name:'PRO', pct:0.75, color:'#f59e0b', locked:null },
+      { id:'pj',  name:'Prov. Unidas (PJ)', pct:33.77, color:'#3b82f6', locked:'theirs' },
+      { id:'dc',  name:'Def. Córdoba', pct:7.55, color:'#f97316', locked:null },
+      { id:'k',   name:'Fza. Patria (K)', pct:3.73, color:'#10b981', locked:null },
+      { id:'fit', name:'FIT-U', pct:0.89, color:'#6b7280', locked:null },
+    ]
+  },
+  sf: {
+    label: 'San Francisco',
+    sub: '38,233 votos válidos',
+    parties: [
+      { id:'lla', name:'LLA', pct:39.86, color:'#7c3aed', locked:'ours' },
+      { id:'pl',  name:'Pto. Libertario', pct:6.05, color:'#a78bfa', locked:null },
+      { id:'ucr', name:'UCR', pct:2.78, color:'#ef4444', locked:null },
+      { id:'pro', name:'PRO', pct:0.92, color:'#f59e0b', locked:null },
+      { id:'pj',  name:'Prov. Unidas (PJ)', pct:31.85, color:'#3b82f6', locked:'theirs' },
+      { id:'dc',  name:'Def. Córdoba', pct:7.57, color:'#f97316', locked:null },
+      { id:'k',   name:'Fza. Patria (K)', pct:4.51, color:'#10b981', locked:null },
+      { id:'fit', name:'FIT-U', pct:1.45, color:'#6b7280', locked:null },
+    ]
+  }
+};
+
+const PRESETS = [
+  { name:'Grieta total', ours:['lla','pl','ucr','pro'], theirs:['pj','dc','k'] },
+  { name:'PL con PJ ⚠️', ours:['lla','ucr','pro'], theirs:['pj','pl','dc','k'] },
+  { name:'Libertarios solos', ours:['lla','pl'], theirs:['pj','dc','k','ucr','pro'] },
+  { name:'LLA+PL+UCR', ours:['lla','pl','ucr'], theirs:['pj','dc','k'] },
+  { name:'LLA sola', ours:['lla'], theirs:['pj','dc','k','pl','ucr','pro','fit'] },
+  { name:'Aliado mínimo', ours:['lla','pl'], theirs:['pj','dc','k'] },
+  { name:'Puricelli sep.', ours:['lla','pl','ucr','pro'], theirs:['pj','dc'], neutral:['k'] },
+];
+
+const EVO = [
+  { name:'LLA', color:'#7c3aed', data:[
+    {y:'2019',v:0},{y:'2021',v:2.2},{y:'PASO 23',v:35.7},{y:'Gen 23',v:35.3},{y:'Balotaje',v:75.7},{y:'Leg 25',v:41.5}
+  ]},
+  { name:'JxC → UCR+PRO', color:'#f59e0b', data:[
+    {y:'2019',v:50.4},{y:'2021',v:53.9},{y:'Gen 23',v:21.0},{y:'Leg 25',v:3.95}
+  ]},
+  { name:'PJ/Hacemos', color:'#3b82f6', data:[
+    {y:'2019',v:17.9},{y:'2021',v:29.8},{y:'Gen 23',v:31.0},{y:'Leg 25',v:33.8}
+  ]},
+  { name:'Kirchnerismo', color:'#10b981', data:[
+    {y:'2019',v:23.6},{y:'2021',v:9.4},{y:'Gen 23',v:11.7},{y:'Leg 25',v:3.7}
+  ]},
+];
+
+// ===== STATE =====
+let currentLevel = 'dpto';
+let sides = {}; // partyId -> 'ours' | 'theirs' | null
+let activePreset = 0;
+
+function getParties() { return DATA[currentLevel].parties; }
+
+// ===== NAVIGATION =====
+function nav(sec, btn) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.getElementById('sec-'+sec).classList.add('active');
+  document.querySelectorAll('.bottomnav button').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+function setLevel(lvl) {
+  currentLevel = lvl;
+  document.querySelectorAll('.level-tab').forEach((t,i) => t.classList.toggle('active', (i===0&&lvl==='dpto')||(i===1&&lvl==='sf')));
+  document.getElementById('esc-subtitle').textContent = DATA[lvl].label + ' · ' + DATA[lvl].sub;
+  applyPreset(activePreset);
+}
+
+// ===== TOGGLES =====
+function initToggles() {
+  const grid = document.getElementById('toggles');
+  grid.innerHTML = '';
+  getParties().forEach(p => {
+    const side = sides[p.id] || null;
+    const isLocked = p.locked;
+    const div = document.createElement('div');
+    div.className = 'toggle-item' + (side==='ours'?' ours':'') + (side==='theirs'?' theirs':'') + (isLocked?' locked':'');
+    div.innerHTML = `
+      <div class="toggle-dot" style="background:${p.color}"></div>
+      <div class="toggle-name">${p.name}</div>
+      <div class="toggle-pct">${p.pct}%</div>
+      <div class="toggle-sw ${side==='ours'?'on-ours':side==='theirs'?'on-theirs':''}"></div>
+    `;
+    if (!isLocked) {
+      div.addEventListener('click', () => {
+        // Cycle: null -> ours -> theirs -> null
+        if (!sides[p.id]) sides[p.id] = 'ours';
+        else if (sides[p.id]==='ours') sides[p.id] = 'theirs';
+        else sides[p.id] = null;
+        activePreset = -1;
+        document.querySelectorAll('.preset').forEach(p => p.classList.remove('active'));
+        render();
+      });
+    }
+    grid.appendChild(div);
+  });
+}
+
+// ===== RENDER =====
+function makeStackedBar(container, segsLeft, segsRight, height) {
+  container.innerHTML = '';
+  container.style.height = (height||44)+'px';
+  const total = [...segsLeft, ...segsRight].reduce((s,x) => s+x.pct, 0);
+  
+  segsLeft.forEach(s => {
+    const w = (s.pct/total*100);
+    const div = document.createElement('div');
+    div.className = 'sbar-seg';
+    div.style.cssText = `width:${w}%;background:${s.color}`;
+    div.innerHTML = w > 5 ? `${s.name} ${s.pct.toFixed(1)}` : (w > 2 ? s.pct.toFixed(1) : '');
+    div.innerHTML += `<span class="tip">${s.name}: ${s.pct.toFixed(1)}%</span>`;
+    container.appendChild(div);
+  });
+  
+  if (segsLeft.length && segsRight.length) {
+    const d = document.createElement('div');
+    d.className = 'sbar-divider';
+    container.appendChild(d);
+  }
+  
+  segsRight.forEach(s => {
+    const w = (s.pct/total*100);
+    const div = document.createElement('div');
+    div.className = 'sbar-seg';
+    div.style.cssText = `width:${w}%;background:${s.color}`;
+    div.innerHTML = w > 5 ? `${s.name} ${s.pct.toFixed(1)}` : (w > 2 ? s.pct.toFixed(1) : '');
+    div.innerHTML += `<span class="tip">${s.name}: ${s.pct.toFixed(1)}%</span>`;
+    container.appendChild(div);
+  });
+}
+
+function render() {
+  const parties = getParties();
+  
+  // Calculate
+  let ours = [], theirs = [], neutral = [];
+  parties.forEach(p => {
+    const s = p.locked || sides[p.id] || null;
+    if (s==='ours') ours.push(p);
+    else if (s==='theirs') theirs.push(p);
+    else neutral.push(p);
+  });
+  
+  const totalA = ours.reduce((s,p) => s+p.pct, 0);
+  const totalB = theirs.reduce((s,p) => s+p.pct, 0);
+  const diff = totalA - totalB;
+  
+  // Toggles
+  initToggles();
+  
+  // Coalition bar
+  makeStackedBar(document.getElementById('coalition-bar'), ours, theirs);
+  
+  // Result
+  document.getElementById('res-pct-a').textContent = totalA.toFixed(1)+'%';
+  document.getElementById('res-pct-b').textContent = totalB.toFixed(1)+'%';
+  
+  const badge = document.getElementById('res-badge');
+  if (diff > 5) { badge.className='rbadge w'; badge.textContent='✅ +'+diff.toFixed(1)+'pp'; }
+  else if (diff > 0) { badge.className='rbadge t'; badge.textContent='⚡ +'+diff.toFixed(1)+'pp'; }
+  else if (diff > -3) { badge.className='rbadge t'; badge.textContent='⚡ '+diff.toFixed(1)+'pp'; }
+  else { badge.className='rbadge l'; badge.textContent='❌ '+diff.toFixed(1)+'pp'; }
+  
+  // Breakdown
+  const bkA = ours.map(p => `<b>${p.name}</b> ${p.pct}`).join(' + ');
+  const bkB = theirs.map(p => `<b>${p.name}</b> ${p.pct}`).join(' + ');
+  const neutText = neutral.length ? `<br>Neutros: ${neutral.map(p=>p.name+' '+p.pct).join(', ')}` : '';
+  document.getElementById('res-breakdown').innerHTML = `🟣 ${bkA} = <b>${totalA.toFixed(1)}%</b><br>🔴 ${bkB} = <b>${totalB.toFixed(1)}%</b>${neutText}`;
+}
+
+// ===== PRESETS =====
+function applyPreset(idx) {
+  activePreset = idx;
+  const p = PRESETS[idx];
+  sides = {};
+  if (p.ours) p.ours.forEach(id => sides[id] = 'ours');
+  if (p.theirs) p.theirs.forEach(id => sides[id] = 'theirs');
+  
+  document.querySelectorAll('.preset').forEach((el,i) => el.classList.toggle('active', i===idx));
+  render();
+  renderPresetCards();
+}
+
+function initPresets() {
+  const container = document.getElementById('presets');
+  container.innerHTML = '';
+  PRESETS.forEach((p,i) => {
+    const btn = document.createElement('div');
+    btn.className = 'preset' + (i===0?' active':'');
+    btn.textContent = p.name;
+    btn.addEventListener('click', () => applyPreset(i));
+    container.appendChild(btn);
+  });
+}
+
+function renderPresetCards() {
+  const container = document.getElementById('preset-cards');
+  container.innerHTML = '';
+  const parties = getParties();
+  
+  PRESETS.forEach((preset, idx) => {
+    const ours = parties.filter(p => preset.ours?.includes(p.id));
+    const theirs = parties.filter(p => preset.theirs?.includes(p.id));
+    const neutral = preset.neutral ? parties.filter(p => preset.neutral.includes(p.id)) : [];
+    
+    const totalA = ours.reduce((s,p) => s+p.pct, 0);
+    const totalB = theirs.reduce((s,p) => s+p.pct, 0);
+    const diff = totalA - totalB;
+    
+    let badgeClass, badgeText;
+    if (diff > 5) { badgeClass='rbadge w'; badgeText='✅ +'+diff.toFixed(1)+'pp'; }
+    else if (diff > 0) { badgeClass='rbadge t'; badgeText='⚡ +'+diff.toFixed(1)+'pp'; }
+    else if (diff > -3) { badgeClass='rbadge t'; badgeText='⚡ '+diff.toFixed(1)+'pp'; }
+    else { badgeClass='rbadge l'; badgeText='❌ '+diff.toFixed(1)+'pp'; }
+    
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.style.cursor = 'pointer';
+    card.style.borderColor = idx===activePreset ? 'var(--lla)' : '';
+    card.addEventListener('click', () => applyPreset(idx));
+    
+    const bkA = ours.map(p => `<span style="color:${p.color}">${p.name} <b>${p.pct}</b></span>`).join(' + ');
+    const bkB = theirs.map(p => `<span style="color:${p.color}">${p.name} <b>${p.pct}</b></span>`).join(' + ');
+    const neutHtml = neutral.length ? `<div style="font-size:11px;color:#eab308;margin-top:4px">🟡 ${neutral.map(p=>p.name+' '+p.pct+'%').join(', ')} — separado</div>` : '';
+    
+    card.innerHTML = `
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <div><span style="font-size:10px;color:#71717a;text-transform:uppercase;letter-spacing:1px">Escenario ${idx+1}</span><br><span style="font-size:14px;font-weight:700;color:#fff">${preset.name}</span></div>
+        <span class="${badgeClass}">${badgeText}</span>
+      </div>
+      <div class="sbar" id="preset-bar-${idx}"></div>
+      <div style="font-size:11px;color:#a1a1aa;margin-top:4px">🟣 ${bkA} = <b style="color:#fff">${totalA.toFixed(1)}%</b></div>
+      <div style="font-size:11px;color:#a1a1aa">🔴 ${bkB} = <b style="color:#fff">${totalB.toFixed(1)}%</b></div>
+      ${neutHtml}
+    `;
+    container.appendChild(card);
+    
+    // Render the bar after appending
+    setTimeout(() => makeStackedBar(document.getElementById('preset-bar-'+idx), ours, theirs, 36), 10);
+  });
+}
+
+// ===== DASHBOARD =====
+function initDashboard() {
+  const parties = DATA.dpto.parties;
+  const grid = document.getElementById('stats-grid');
+  grid.innerHTML = '';
+  parties.forEach(p => {
+    if (p.pct < 1) return;
+    grid.innerHTML += `<div class="stat"><div class="v" style="color:${p.color}">${p.pct}%</div><div class="l">${p.name}</div></div>`;
+  });
+  
+  // Main bar
+  const sorted = [...parties].sort((a,b) => b.pct - a.pct);
+  makeStackedBar(document.getElementById('main-bar'), sorted, [], 50);
+}
+
+// ===== COMPARISON =====
+function initComparison() {
+  const container = document.getElementById('cmp-container');
+  container.innerHTML = '';
+  const dp = DATA.dpto.parties;
+  const sp = DATA.sf.parties;
+  
+  dp.forEach(d => {
+    const s = sp.find(p => p.id === d.id);
+    if (!s || d.pct < 1) return;
+    const diff = s.pct - d.pct;
+    const diffColor = diff > 0 ? '#22c55e' : diff < 0 ? '#ef4444' : '#71717a';
+    
+    container.innerHTML += `
+      <div class="cmp-row">
+        <div class="cmp-name" style="color:${d.color}">${d.id.toUpperCase()}</div>
+        <div class="cmp-bars">
+          <div class="cmp-b" style="width:${s.pct*2}%;background:${d.color}88">${s.pct}%<span class="cmp-tag">SF</span></div>
+          <div class="cmp-b" style="width:${d.pct*2}%;background:${d.color}">${d.pct}%<span class="cmp-tag">Dpto</span></div>
+        </div>
+        <div class="cmp-diff" style="color:${diffColor}">${diff>0?'+':''}${diff.toFixed(1)}</div>
+      </div>`;
+  });
+}
+
+// ===== EVOLUTION =====
+function initEvolution() {
+  const container = document.getElementById('evo-container');
+  container.innerHTML = '';
+  
+  EVO.forEach(party => {
+    let html = `<div class="card"><h3 style="color:${party.color}">${party.name}</h3>`;
+    party.data.forEach((d, i) => {
+      const isLast = i === party.data.length - 1;
+      const opacity = 0.3 + (i / party.data.length) * 0.7;
+      html += `<div class="evo"><div class="evo-y"${isLast?' style="font-weight:700;color:#fff"':''}>${d.y}</div><div class="evo-bar"><div class="evo-fill" style="width:${Math.max(d.v,1)}%;background:${party.color};opacity:${opacity}">${d.v > 0 ? d.v+'%' : '—'}</div></div></div>`;
+    });
+    
+    // Insight
+    if (party.name.includes('LLA')) html += `<div class="insight" style="margin-top:8px">De <b>0% a 41.5%</b> en 6 años. Absorbió todo JxC.</div>`;
+    if (party.name.includes('JxC')) html += `<div class="insight" style="margin-top:8px;border-color:var(--ucr)">De <b>54% a ~4%</b>. El electorado migró completo a LLA.</div>`;
+    if (party.name.includes('PJ')) html += `<div class="insight" style="margin-top:8px;border-color:var(--pj)">Piso sólido <b>30-34%</b>. Estructura, intendentes, obra pública.</div>`;
+    if (party.name.includes('K')) html += `<div class="insight" style="margin-top:8px;border-color:var(--k)">De <b>24% a 4%</b>. San Justo es anti-K.</div>`;
+    
+    html += '</div>';
+    container.innerHTML += html;
+  });
+}
+
+// ===== INIT =====
+function init() {
+  initDashboard();
+  initPresets();
+  applyPreset(0);
+  initComparison();
+  initEvolution();
+}
+
+init();
+</script>
+
+</body>
+</html>
